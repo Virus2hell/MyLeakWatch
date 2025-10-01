@@ -31,11 +31,11 @@ const AboutUs = () => {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-            About <span className="text-blue-400">;--Pwned</span>
+            About <span className="text-blue-400">My</span>LeakWatch
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-cyan-400 mx-auto mb-8"></div>
           <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-            Have I Been Pwned is a free resource for anyone to quickly assess if they may have been 
+            MyLeakWatch is a free resource for anyone to quickly assess if they may have been 
             put at risk due to an online account of theirs having been compromised or "pwned" in a data breach.
           </p>
         </div>

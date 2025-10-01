@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="col-span-1 lg:col-span-2">
             <div className="text-2xl font-bold text-white mb-4">
-              <span className="text-blue-400">;--</span>Pwned
+              <span className="text-blue-400">My</span>LeakWatch
             </div>
             <p className="text-gray-300 mb-6 max-w-md">
               Helping millions of people worldwide check if their personal data has been 
@@ -87,7 +87,7 @@ const Footer = () => {
         <div className="border-t border-slate-700 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2025 Have I Been Pwned. All rights reserved.
+              © 2025 MyLeakWatch. All rights reserved.
             </p>
             <p className="text-gray-400 text-sm mt-2 md:mt-0">
               Made with security in mind 🔒
