@@ -49,7 +49,7 @@ const Footer = () => {
               </li>
               <li>
                 <a href="#" className="text-gray-300 hover:text-white transition-colors flex items-center">
-                  API Access
+                  Docs
                   <ExternalLink className="h-4 w-4 ml-1" />
                 </a>
               </li>
