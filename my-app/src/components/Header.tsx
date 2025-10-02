@@ -19,7 +19,7 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <a href="#" className="text-gray-300 hover:text-white transition-colors">
-              Who's Been Pwned
+              Home
             </a>
             <a href="#" className="text-gray-300 hover:text-white transition-colors">
               Passwords
@@ -27,12 +27,9 @@ const Header = () => {
             <a href="#" className="text-gray-300 hover:text-white transition-colors">
               Notify Me
             </a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">
-              API
-            </a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">
+            {/* <a href="#" className="text-gray-300 hover:text-white transition-colors">
               Pricing
-            </a>
+            </a> */}
             <div className="relative">
               <button
                 onClick={() => setIsAboutOpen(!isAboutOpen)}
@@ -57,7 +54,7 @@ const Header = () => {
           {/* Dashboard Button */}
           <div className="hidden md:flex items-center">
             <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors">
-              Dashboard
+              Chat With AI
             </button>
           </div>
 
@@ -77,7 +74,7 @@ const Header = () => {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-slate-700/90 rounded-md mt-2">
               <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
-                Who's Been Pwned
+                Home
               </a>
               <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
                 Passwords
@@ -85,17 +82,14 @@ const Header = () => {
               <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
                 Notify Me
               </a>
-              <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
-                API
-              </a>
-              <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
+              {/* <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
                 Pricing
-              </a>
+              </a> */}
               <a href="#about" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
                 About
               </a>
               <button className="w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md transition-colors mt-2">
-                Dashboard
+                Chat With AI
               </button>
             </div>
           </div>
