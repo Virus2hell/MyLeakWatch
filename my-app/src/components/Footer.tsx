@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Twitter, Mail, ExternalLink } from 'lucide-react';
+import { Github, ExternalLink } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -16,14 +16,8 @@ const Footer = () => {
               compromised in data breaches. Free, secure, and trusted by security professionals.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Twitter className="h-6 w-6" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="https://github.com/Virus2hell/MyLeakWatch" className="text-gray-400 hover:text-white transition-colors">
                 <Github className="h-6 w-6" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Mail className="h-6 w-6" />
               </a>
             </div>
           </div>
