@@ -27,9 +27,9 @@ const Header = () => {
             <a href="#" className="text-gray-300 hover:text-white transition-colors">
               Notify Me
             </a>
-            {/* <a href="#" className="text-gray-300 hover:text-white transition-colors">
-              Pricing
-            </a> */}
+            <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              Docs
+            </a>
             <div className="relative">
               <button
                 onClick={() => setIsAboutOpen(!isAboutOpen)}
@@ -82,9 +82,9 @@ const Header = () => {
               <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
                 Notify Me
               </a>
-              {/* <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
-                Pricing
-              </a> */}
+              <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
+                Docs
+              </a>
               <a href="#about" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
                 About
               </a>
