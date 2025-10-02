@@ -6,6 +6,7 @@ import AboutUs from './components/AboutUs';
 import Footer from './components/Footer';
 import ImageSearch from './components/ImageSearch';
 import EmailChecker from './components/EmailChecker';
+import Contact from './components/Contact';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <ImageSearch />
       <AboutUs />
       {/* <StatsSection /> */}
+      <Contact />
       <Footer />
     </div>
   );
