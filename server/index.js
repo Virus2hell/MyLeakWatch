@@ -15,7 +15,7 @@ app.use(express.json());
 const contactRoute = require("./routes/contact"); // new route
 
 // Register routes
-app.use("/api/check-email", emailChecker);
+app.use("/api/contact", contactRoute); // new route
 
 
 // configure multer to store file in memory / temp

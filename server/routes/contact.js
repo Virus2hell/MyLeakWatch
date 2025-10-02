@@ -1,7 +1,7 @@
-import { Router } from "express";
-import nodemailer from "nodemailer";
+const express = require("express");
+const nodemailer = require("nodemailer");
 
-const router = Router();
+const router = express.Router();
 
 router.post("/", async (req, res) => {
   const { name, email, message } = req.body;
@@ -11,16 +11,19 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail", // you can change this to outlook/yahoo
+    let transporter = nodemailer.createTransport({
+      service: "gmail", // Or use "outlook", "yahoo", etc.
       auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+        user: process.env.MAIL_USER, // Your email
+        pass: process.env.MAIL_PASS, // App password
+      },
+      tls: {
+        rejectUnauthorized: false, // ✅ ignore self-signed certificates
       },
     });
 
     await transporter.sendMail({
-      from: `"MyLeakWatch Contact" <${process.env.MAIL_USER}>`,
+      from: `"My Website Contact" <${process.env.MAIL_USER}>`,
       to: process.env.CONTACT_RECEIVER || process.env.MAIL_USER,
       subject: `New message from ${name}`,
       text: `
@@ -36,11 +39,11 @@ router.post("/", async (req, res) => {
       `,
     });
 
-    res.json({ success: true, message: "Message sent successfully!" });
+    res.json({ success: true, message: "Message sent successfully" });
   } catch (err) {
     console.error("Error sending email:", err);
     res.status(500).json({ error: "Failed to send message" });
   }
 });
 
-export default router;
+module.exports = router;
