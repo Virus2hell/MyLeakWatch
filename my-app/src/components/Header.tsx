@@ -43,8 +43,8 @@ const Header = () => {
                   <a href="#about" className="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-600 hover:text-white">
                     About Us
                   </a>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-600 hover:text-white">
-                    Contact
+                  <a href="#contact" className="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-600 hover:text-white">
+                    Contact Us
                   </a>
                 </div>
               )}
