@@ -58,13 +58,13 @@ const HeroSection = () => {
           </form>
         </div>
 
-        {/* Terms */}
+        {/* Terms
         <div className="text-gray-400 text-sm">
           Using Have I Been Pwned is subject to the{' '}
           <a href="#" className="text-blue-400 hover:text-blue-300 underline">
             terms of use
           </a>
-        </div>
+        </div> */}
       </div>
     </section>
   );
