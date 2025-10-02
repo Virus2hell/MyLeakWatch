@@ -11,6 +11,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+///contact form
+const contactRoute = require("./routes/contact"); // new route
+
+// Register routes
+app.use("/api/check-email", emailChecker);
+
+
 // configure multer to store file in memory / temp
 const upload = multer({ dest: 'uploads/' });
 
