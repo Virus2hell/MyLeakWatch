@@ -24,8 +24,8 @@ const Header = () => {
             <a href="#" className="text-gray-300 hover:text-white transition-colors">
               Passwords
             </a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">
-              Notify Me
+            <a href="#imageSearch" className="text-gray-300 hover:text-white transition-colors">
+              Image Search
             </a>
             <a href="#" className="text-gray-300 hover:text-white transition-colors">
               Docs
@@ -79,8 +79,8 @@ const Header = () => {
               <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
                 Passwords
               </a>
-              <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
-                Notify Me
+              <a href="#imageSearch" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
+                Image Search
               </a>
               <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
                 Docs
