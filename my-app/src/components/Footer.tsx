@@ -33,12 +33,12 @@ const Footer = () => {
               </li>
               <li>
                 <a href="#" className="text-gray-300 hover:text-white transition-colors flex items-center">
-                  Password Check
+                  Password Management
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors flex items-center">
-                  Notify Me
+                <a href="#imageSearch" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                  Image Search
                 </a>
               </li>
               <li>
