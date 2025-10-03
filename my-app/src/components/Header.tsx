@@ -22,7 +22,7 @@ const Header = () => {
               Home
             </a>
             <a href="#" className="text-gray-300 hover:text-white transition-colors">
-              Passwords
+              Password Management
             </a>
             <a href="#imageSearch" className="text-gray-300 hover:text-white transition-colors">
               Image Search
@@ -77,7 +77,7 @@ const Header = () => {
                 Home
               </a>
               <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
-                Passwords
+                Password Management
               </a>
               <a href="#imageSearch" className="text-gray-300 hover:text-white block px-3 py-2 text-base">
                 Image Search
