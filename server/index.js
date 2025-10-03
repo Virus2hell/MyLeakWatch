@@ -7,15 +7,19 @@ const multer = require('multer');
 const FormData = require('form-data');
 const fs = require('fs');
 
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 ///contact form
 const contactRoute = require("./routes/contact"); // new route
+const chatRoute = require('./routes/chat');
+
 
 // Register routes
 app.use("/api/contact", contactRoute); // new route
+app.use("/api/chat", chatRoute);
 
 
 // configure multer to store file in memory / temp

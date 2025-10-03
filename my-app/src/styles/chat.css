@@ -1,0 +1,2 @@
+/* Example: ensure transform transitions are smooth */
+aside[role="dialog"] { transition-property: transform, opacity; }
