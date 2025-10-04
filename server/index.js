@@ -17,67 +17,64 @@ app.use('/api/contact', contactRoute);
 // multer temp storage for image search
 const upload = multer({ dest: 'uploads/' });
 
-/**
- * =========================
- * Chat With AI (streaming)
- * POST /api/chat
- * Body: { messages: [{role:'user'|'assistant', content:string}, ...] }
- * Streams plain text chunks back to the client.
- * =========================
- */
+// LOCAL CHAT (Ollama OpenAI-compatible)
 app.post('/api/chat', async (req, res) => {
   try {
-    const upstreamUrl = process.env.PROVIDER_URL || 'https://api.openai.com/v1/chat/completions';
-    const apiKey = process.env.OPENAI_API_KEY;
-    const model = process.env.MODEL || 'gpt-4o-mini';
+    const upstreamUrl = 'http://localhost:11434/v1/chat/completions';
+    const model = process.env.LOCAL_MODEL || 'llama3.1:8b';
 
     const inputMsgs = Array.isArray(req.body?.messages) ? req.body.messages : [];
     const safe = inputMsgs.slice(-20).map(m => ({
       role: m.role === 'assistant' ? 'assistant' : 'user',
-      content: String(m.content || '').slice(0, 4000)
+      content: String(m.content || '').slice(0, 3000)
     }));
-    const body = {
-      model,
-      stream: true,
-      temperature: 0.4,
-      messages: [{ role: 'system', content: 'You are MyLeakWatch Assistant.' }, ...safe]
+
+    const system = {
+      role: 'system',
+      content:
+        'You are a cybersecurity safety assistant for MyLeakWatch. Answer concisely about ' +
+        'data breaches, password best practices, credential stuffing, phishing, reverse image ' +
+        'search context, and safe breach-check usage. Never request passwords or secrets. ' +
+        'If asked to check email/IP/photo here, instruct to use the site tools instead.'
     };
 
-    console.log('[chat] inbound messages:', safe.length);
-    if (!apiKey) {
-      console.error('[chat] MISSING OPENAI_API_KEY');
-      return res.status(500).json({ error: 'Missing OPENAI_API_KEY' });
-    }
+    const body = {
+      model,
+      messages: [system, ...safe],
+      stream: true,
+      temperature: 0.3
+    };
 
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Transfer-Encoding', 'chunked');
 
-    const upstream = await axios.post(upstreamUrl, body, {
-      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      responseType: 'stream',
-      validateStatus: () => true
+    const fetch = (await import('node-fetch')).default;
+    const upstream = await fetch(upstreamUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
     });
 
-    console.log('[chat] upstream status:', upstream.status);
-
-    if (upstream.status < 200 || upstream.status >= 300) {
-      let errText = '';
-      upstream.data.on('data', (c) => { errText += c.toString(); });
-      upstream.data.on('end', () => {
-        console.error('[chat] upstream error body:', errText);
-        // Fallback: return non-streaming error JSON for client visibility
-        try { res.status(upstream.status).end('Upstream error'); } catch {}
-      });
-      upstream.data.on('error', (e) => {
-        console.error('[chat] upstream stream error:', e?.message);
-        try { res.status(upstream.status).end('Upstream error'); } catch {}
-      });
+    if (!upstream.ok || !upstream.body) {
+      const text = await upstream.text();
+      console.error('[local] upstream error', upstream.status, text);
+      res.status(upstream.status).end(text || 'Upstream error');
       return;
     }
 
-    upstream.data.on('data', chunk => {
-      const str = chunk.toString();
-      for (const line of str.split('\n')) {
+    const reader = upstream.body.getReader();
+    const decoder = new TextDecoder();
+
+    // Parse OpenAI-style SSE: data: {json}
+    let buffer = '';
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+      for (const line of lines) {
         const trimmed = line.trim();
         if (!trimmed.startsWith('data:')) continue;
         const data = trimmed.slice(5).trim();
@@ -88,18 +85,11 @@ app.post('/api/chat', async (req, res) => {
           if (delta) res.write(delta);
         } catch { /* ignore */ }
       }
-    });
+    }
 
-    upstream.data.on('end', () => res.end());
-    upstream.data.on('error', (e) => {
-      console.error('[chat] stream error:', e?.message);
-      try { res.end(); } catch {}
-    });
-    req.on('close', () => {
-      try { upstream.data.destroy?.(); } catch {}
-    });
+    res.end();
   } catch (err) {
-    console.error('[chat] handler error:', err.message);
+    console.error('[local] handler error:', err.message);
     res.status(500).end('Server error');
   }
 });
