@@ -5,6 +5,7 @@ const axios = require('axios');
 const multer = require('multer');
 const FormData = require('form-data');
 const fs = require('fs');
+//const fetch = require('node-fetch');
 
 const app = express();
 app.use(cors());
@@ -17,10 +18,17 @@ app.use('/api/contact', contactRoute);
 // multer temp storage for image search
 const upload = multer({ dest: 'uploads/' });
 
-// LOCAL CHAT (Ollama OpenAI-compatible)
+/**
+ * =========================
+ * Local Chat via Ollama (OpenAI-compatible)
+ * POST /api/chat
+ * Body: { messages: [{role:'user'|'assistant', content:string}, ...] }
+ * Streams plain text chunks back to the client.
+ * =========================
+ */
 app.post('/api/chat', async (req, res) => {
   try {
-    const upstreamUrl = 'http://localhost:11434/v1/chat/completions';
+    const upstreamUrl = 'http://127.0.0.1:11434/v1/chat/completions';
     const model = process.env.LOCAL_MODEL || 'llama3.1:8b';
 
     const inputMsgs = Array.isArray(req.body?.messages) ? req.body.messages : [];
@@ -32,41 +40,33 @@ app.post('/api/chat', async (req, res) => {
     const system = {
       role: 'system',
       content:
-        'You are a cybersecurity safety assistant for MyLeakWatch. Answer concisely about ' +
-        'data breaches, password best practices, credential stuffing, phishing, reverse image ' +
-        'search context, and safe breach-check usage. Never request passwords or secrets. ' +
-        'If asked to check email/IP/photo here, instruct to use the site tools instead.'
+        'You are a cybersecurity safety assistant for MyLeakWatch. Answer concisely about breaches, passwords, credential stuffing, phishing, reverse image search, and safe breach‑check usage. Never ask for passwords or secrets.'
     };
 
-    const body = {
-      model,
-      messages: [system, ...safe],
-      stream: true,
-      temperature: 0.3
-    };
+    const body = { model, messages: [system, ...safe], stream: true, temperature: 0.3 };
 
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Transfer-Encoding', 'chunked');
 
-    const fetch = (await import('node-fetch')).default;
     const upstream = await fetch(upstreamUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
 
+    console.log('[ollama] status:', upstream.status);
+
     if (!upstream.ok || !upstream.body) {
       const text = await upstream.text();
-      console.error('[local] upstream error', upstream.status, text);
+      console.error('[ollama] upstream error', upstream.status, text);
       res.status(upstream.status).end(text || 'Upstream error');
       return;
     }
 
     const reader = upstream.body.getReader();
     const decoder = new TextDecoder();
-
-    // Parse OpenAI-style SSE: data: {json}
     let buffer = '';
+
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
@@ -74,25 +74,30 @@ app.post('/api/chat', async (req, res) => {
 
       const lines = buffer.split('\n');
       buffer = lines.pop() || '';
+
       for (const line of lines) {
         const trimmed = line.trim();
         if (!trimmed.startsWith('data:')) continue;
         const data = trimmed.slice(5).trim();
+        if (!data) continue;
         if (data === '[DONE]') { res.end(); return; }
         try {
           const json = JSON.parse(data);
           const delta = json?.choices?.[0]?.delta?.content || '';
           if (delta) res.write(delta);
-        } catch { /* ignore */ }
+        } catch {
+          console.error('[ollama] parse error line:', data.slice(0, 200));
+        }
       }
     }
 
     res.end();
   } catch (err) {
-    console.error('[local] handler error:', err.message);
+    console.error('[ollama] handler error:', err?.stack || err?.message);
     res.status(500).end('Server error');
   }
 });
+
 
 
 /**
