@@ -100,13 +100,12 @@ app.post('/api/chat', async (req, res) => {
  */
 app.post('/api/check-email', async (req, res) => {
   try {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ error: 'Missing email' });
+    const email = String(req.body?.email || '').trim().toLowerCase();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: 'Invalid email' });
+    }
 
-    const hibpUrl = `https://haveibeenpwned.com/api/v3/breachedaccount/${encodeURIComponent(
-      email
-    )}?truncateResponse=false`;
-
+    const hibpUrl = `https://haveibeenpwned.com/api/v3/breachedaccount/${encodeURIComponent(email)}?truncateResponse=false`;
     const headers = {
       'hibp-api-key': process.env.HIBP_API_KEY || '',
       'user-agent': 'MyLeakWatch/1.0 (contact@example.com)'
@@ -116,17 +115,21 @@ app.post('/api/check-email', async (req, res) => {
 
     if (response.status === 200) {
       return res.json({ found: true, breaches: response.data });
-    } else if (response.status === 404) {
-      return res.json({ found: false, breaches: [] });
-    } else {
-      console.error('HIBP error', response.status, response.data);
-      return res.status(500).json({ error: 'HIBP error', details: response.data });
     }
+    if (response.status === 404) {
+      return res.json({ found: false, breaches: [] });
+    }
+    if (response.status === 429) {
+      return res.status(429).json({ error: 'Rate limited by HIBP. Try again later.' });
+    }
+    console.error('HIBP error', response.status, response.data);
+    return res.status(500).json({ error: 'HIBP error', details: response.data });
   } catch (err) {
-    console.error(err);
+    console.error('HIBP exception', err.message);
     res.status(500).json({ error: 'server error', details: err.message });
   }
 });
+
 
 /**
  * ========== Image reverse search via Bing Visual Search ==========
