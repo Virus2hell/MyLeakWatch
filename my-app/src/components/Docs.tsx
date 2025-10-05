@@ -41,45 +41,63 @@ const SECTIONS: Section[] = [
 
 export default function Docs() {
   const [active, setActive] = useState<string>('intro');
-  const contentRef = useRef<HTMLDivElement>(null);
+  const ioRef = useRef<IntersectionObserver | null>(null);
+  const isProgrammaticScroll = useRef(false);
 
+  // Set up scroll spy
   useEffect(() => {
-    const nodes = Array.from(document.querySelectorAll('[data-doc-section="true"]')) as HTMLElement[];
+    const targets = Array.from(
+      document.querySelectorAll('[data-doc-section="true"], .subhead')
+    ) as HTMLElement[];
+
     const io = new IntersectionObserver(
       (entries) => {
-        const top = entries
+        if (isProgrammaticScroll.current) return;
+        const visible = entries
           .filter(e => e.isIntersecting)
-          .sort((a,b) => (a.target as HTMLElement).offsetTop - (b.target as HTMLElement).offsetTop)[0];
-        if (top) setActive((top.target as HTMLElement).id);
+          .sort((a, b) => (a.target as HTMLElement).offsetTop - (b.target as HTMLElement).offsetTop);
+        if (visible[0]) setActive((visible[0].target as HTMLElement).id);
       },
-      { rootMargin: '0px 0px -70% 0px', threshold: [0, 0.25] }
+      { rootMargin: '0px 0px -60% 0px', threshold: 0.25 }
     );
-    nodes.forEach(n => io.observe(n));
+
+    targets.forEach(t => io.observe(t));
+    ioRef.current = io;
     return () => io.disconnect();
   }, []);
 
+  // Jump to hash on load
   useEffect(() => {
-    const hash = window.location.hash.replace('#','');
-    if (hash) {
-      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const h = window.location.hash.replace('#', '');
+    if (h) {
+      const el = document.getElementById(h);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, []);
 
   const jump = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    isProgrammaticScroll.current = true;
+    setActive(id);
     window.history.replaceState(null, '', `#${id}`);
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => { isProgrammaticScroll.current = false; }, 450);
   };
 
   return (
-    <div id='docs' className="docs-page">
+    <div className="docs-page">
+      {/* Hero */}
       <div className="docs-hero">
         <div className="docs-hero-inner">
-          <h1>Docs</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold">Docs</h1>
           <p>Understand breaches and protect your identity with MyLeakWatch.</p>
         </div>
       </div>
 
+      {/* Body */}
       <div className="docs-shell">
+        {/* Left nav */}
         <aside className="docs-nav" aria-label="Documentation navigation">
           <ul>
             {SECTIONS.map(sec => (
@@ -109,7 +127,8 @@ export default function Docs() {
           </ul>
         </aside>
 
-        <main className="docs-content" ref={contentRef}>
+        {/* Content */}
+        <main className="docs-content">
           <Section id="intro" title="Introduction">
             <p>
               MyLeakWatch helps identify whether personal identifiers like email addresses or images
@@ -134,18 +153,18 @@ export default function Docs() {
           </Section>
 
           <Section id="email-breach" title="Email Breach">
-            <h3 id="email-how" data-doc-section="true" className="subhead">How it happens</h3>
+            <h3 id="email-how" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">How it happens</h3>
             <p>
               Email addresses leak when services suffer database compromises, misconfigured storage,
               phishing kits harvest logins, or third‑party vendors are breached and lists circulate.
             </p>
-            <h3 id="email-prevent" data-doc-section="true" className="subhead">Prevention</h3>
+            <h3 id="email-prevent" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">Prevention</h3>
             <ul>
               <li>Unique passwords per site; enable app‑based MFA.</li>
               <li>Use aliases for signups; avoid publishing your primary address.</li>
               <li>Be cautious with links/attachments and verify sender domains.</li>
             </ul>
-            <h3 id="email-after" data-doc-section="true" className="subhead">After a breach</h3>
+            <h3 id="email-after" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">After a breach</h3>
             <ul>
               <li>Change the site password and enable MFA; review sessions/devices.</li>
               <li>Hunt for breach‑related phishing; report spam and block.</li>
@@ -154,18 +173,18 @@ export default function Docs() {
           </Section>
 
           <Section id="password-breach" title="Password Breach">
-            <h3 id="pwd-how" data-doc-section="true" className="subhead">How it happens</h3>
+            <h3 id="pwd-how" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">How it happens</h3>
             <p>
               Passwords are exposed by database dumps (weak hashing), phishing, infostealers,
               or reuse that enables credential stuffing across sites.
             </p>
-            <h3 id="pwd-prevent" data-doc-section="true" className="subhead">Prevention</h3>
+            <h3 id="pwd-prevent" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">Prevention</h3>
             <ul>
               <li>Password manager + random passwords; zero reuse.</li>
               <li>MFA everywhere; prefer authenticator apps or security keys.</li>
               <li>Keep OS/browser updated; run reputable endpoint protection.</li>
             </ul>
-            <h3 id="pwd-after" data-doc-section="true" className="subhead">After a breach</h3>
+            <h3 id="pwd-after" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">After a breach</h3>
             <ul>
               <li>Rotate the password immediately; revoke tokens and sessions.</li>
               <li>Check the password via k‑anonymity; retire exposed ones permanently.</li>
@@ -174,18 +193,18 @@ export default function Docs() {
           </Section>
 
           <Section id="image-breach" title="Image Breach">
-            <h3 id="img-how" data-doc-section="true" className="subhead">How it happens</h3>
+            <h3 id="img-how" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">How it happens</h3>
             <p>
               Images leak via public profiles, scraped datasets, compromised albums, or reposts;
               search engines and forums can amplify distribution quickly.
             </p>
-            <h3 id="img-prevent" data-doc-section="true" className="subhead">Prevention</h3>
+            <h3 id="img-prevent" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">Prevention</h3>
             <ul>
               <li>Use privacy controls; strip EXIF; watermark sensitive media.</li>
               <li>Prefer expiring share links; avoid public posts for private photos.</li>
               <li>Run periodic reverse image checks for impersonation.</li>
             </ul>
-            <h3 id="img-after" data-doc-section="true" className="subhead">After misuse</h3>
+            <h3 id="img-after" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">After misuse</h3>
             <ul>
               <li>File takedowns (DMCA/right‑to‑be‑forgotten equivalents) where applicable.</li>
               <li>Report impersonation; keep evidence (URLs, timestamps, screenshots).</li>
@@ -234,8 +253,18 @@ export default function Docs() {
 
 function Section({ id, title, children }: React.PropsWithChildren<{ id: string; title: string }>) {
   return (
-    <section id={id} data-doc-section="true" aria-labelledby={`${id}-title`}>
-      <h2 id={`${id}-title`}>{title}</h2>
+    <section
+      id={id}
+      data-doc-section="true"
+      aria-labelledby={`${id}-title`}
+      className="mb-10"
+    >
+      <h2
+        id={`${id}-title`}
+        className="text-2xl md:text-3xl font-extrabold tracking-tight mb-3 docs-heading"
+      >
+        {title}
+      </h2>
       {children}
     </section>
   );
