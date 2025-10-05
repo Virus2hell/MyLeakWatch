@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database, LucideImagePlus, LucideLockKeyhole, Brain, LucideMailSearch } from 'lucide-react';
+import {LucideImagePlus, LucideLockKeyhole, Brain, LucideMailSearch } from 'lucide-react';
 
 const AboutUs = () => {
   const features = [
@@ -72,19 +72,15 @@ const AboutUs = () => {
             <h3 className="text-3xl font-bold text-white mb-6 text-center">How It Started</h3>
             <div className="prose prose-lg prose-invert max-w-none">
               <p className="text-gray-300 mb-6 leading-relaxed">
-                Have I Been Pwned was created by security expert Troy Hunt in 2013 after witnessing 
-                the impact of major data breaches on everyday users. What started as a simple tool 
-                to help people check if their Adobe accounts were compromised has evolved into the 
-                world's largest repository of breached account data.
+                MyLeakWatch began as a personal initiative to combat the growing threat of data breaches and unauthorized 
+                image leaks online, inspired by tools like Have I Been Pwned but designed with a broader scope to include 
+                visual content monitoring. The project was conceived to empower users with real-time alerts and actionable 
+                insights when their personal data or images appear in compromised databases or surface on the web without consent.
               </p>
               <p className="text-gray-300 mb-6 leading-relaxed">
-                Today, we monitor billions of accounts across thousands of data breaches, providing 
-                real-time alerts and comprehensive breach information to help users understand their 
-                exposure and take appropriate action to secure their accounts.
-              </p>
-              <p className="text-gray-300 leading-relaxed">
-                Our commitment remains the same: to democratize access to breach data and empower 
-                individuals and organizations to better protect themselves in an increasingly connected world.
+                The idea emerged from recognizing gaps in existing breach detection services, which often focus solely on email 
+                and password leaks while overlooking image-based exposure. With increasing incidents of deepfakes, non-consensual sharing, and social media leaks, the need for a tool that 
+                could proactively scan and notify users about leaked visual content became evident.
               </p>
             </div>
           </div>
