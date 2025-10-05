@@ -5,23 +5,23 @@ const AboutUs = () => {
   const features = [
     {
       icon: Shield,
-      title: 'Data Security',
-      description: 'We prioritize the security and privacy of your data with industry-leading protection measures.'
+      title: 'Email breach check',
+      description: 'Fast lookups powered by licensed breach data and HIBP-compatible endpoints, with clear breach details and privacy-first processing.'
     },
     {
       icon: Database,
-      title: 'Comprehensive Database',
-      description: 'Our extensive database contains billions of compromised accounts from thousands of data breaches.'
+      title: 'Image search',
+      description: 'Reverse image scanning to spot unauthorized reuse of photos/avatars using provider integrations and perceptual hashing for quick matches.'
     },
     {
       icon: Users,
-      title: 'Trusted by Millions',
-      description: 'Over 15 billion accounts monitored and trusted by security professionals worldwide.'
+      title: 'Password management',
+      description: 'Securely save passwords in an encrypted vault and access them with email-based OTP for quick, code‑verified unlocks across sessions.'
     },
     {
       icon: Lock,
-      title: 'Free & Transparent',
-      description: 'Our core service is completely free and we operate with full transparency about our methods.'
+      title: 'Chat with AI',
+      description: 'On‑site assistant that explains breach results, prioritizes what to fix, and walks through step‑by‑step remediation in plain language.'
     }
   ];
 
@@ -46,8 +46,8 @@ const AboutUs = () => {
             <h3 className="text-2xl font-bold text-white mb-4">Our Mission</h3>
             <p className="text-lg text-gray-300 max-w-3xl mx-auto">
               We believe that everyone deserves to know when their personal information has been exposed 
-              in data breaches. Our platform provides this crucial information for free, helping millions 
-              of people protect themselves online and make informed decisions about their digital security.
+              in data breaches. Our platform provides this crucial information for free, helping 
+              people protect themselves online and make informed decisions about their digital security.
             </p>
           </div>
         </div>
