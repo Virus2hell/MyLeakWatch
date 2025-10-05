@@ -14,6 +14,15 @@ const Footer = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
     }, 0);
   };
 
+  const goEmailSearch = () => {
+    onNavigate?.('home');
+    // wait for home to mount, then scroll
+    setTimeout(() => {
+      const el = document.getElementById('emailSearch');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
+  };
+
   return (
     <footer className="bg-slate-900 border-t border-slate-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -39,7 +48,7 @@ const Footer = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
             <h4 className="text-lg font-semibold text-white mb-4">Services</h4>
             <ul className="space-y-2">
               <li>
-                <button className="text-gray-300 hover:text-white transition-colors flex items-center" onClick={() => onNavigate?.('home')}>
+                <button className="text-gray-300 hover:text-white transition-colors flex items-center" onClick={goEmailSearch}>
                   Email Search
                 </button>
               </li>

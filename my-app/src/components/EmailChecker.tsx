@@ -42,7 +42,7 @@ export default function EmailChecker() {
   }
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <section id="emailSearch" className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center px-4 sm:px-6 lg:px-8">
     <div className="flex flex-col items-center justify-center text-center py-20 px-4">
       {/* Main Heading */}
         <div className="mb-8">
