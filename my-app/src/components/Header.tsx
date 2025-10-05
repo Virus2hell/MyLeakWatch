@@ -23,7 +23,7 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
 
   return (
     <>
-      <header className="bg-slate-800/90 backdrop-blur-sm border-b border-slate-700/50 relative z-30">
+      <header className="bg-slate-900 backdrop-blur-sm border-b border-slate-700/50 relative z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
