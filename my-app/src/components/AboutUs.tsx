@@ -1,25 +1,25 @@
 import React from 'react';
-import { Shield, Database, Users, Lock } from 'lucide-react';
+import { Database, LucideImagePlus, LucideLockKeyhole, Brain, LucideMailSearch } from 'lucide-react';
 
 const AboutUs = () => {
   const features = [
     {
-      icon: Shield,
+      icon: LucideMailSearch,
       title: 'Email breach check',
       description: 'Fast lookups powered by licensed breach data and HIBP-compatible endpoints, with clear breach details and privacy-first processing.'
     },
     {
-      icon: Database,
+      icon: LucideImagePlus,
       title: 'Image search',
       description: 'Reverse image scanning to spot unauthorized reuse of photos/avatars using provider integrations and perceptual hashing for quick matches.'
     },
     {
-      icon: Users,
+      icon: LucideLockKeyhole,
       title: 'Password management',
       description: 'Securely save passwords in an encrypted vault and access them with email-based OTP for quick, code‑verified unlocks across sessions.'
     },
     {
-      icon: Lock,
+      icon: Brain,
       title: 'Chat with AI',
       description: 'On‑site assistant that explains breach results, prioritizes what to fix, and walks through step‑by‑step remediation in plain language.'
     }
