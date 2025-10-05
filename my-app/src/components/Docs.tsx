@@ -71,7 +71,7 @@ export default function Docs() {
   };
 
   return (
-    <div className="docs-page">
+    <div id='docs' className="docs-page">
       <div className="docs-hero">
         <div className="docs-hero-inner">
           <h1>Docs</h1>

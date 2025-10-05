@@ -24,7 +24,7 @@ function App() {
         </>
       )}
       {page === 'docs' && <Docs />}
-      <Footer />
+      <Footer onNavigate={setPage} currentPage={page} />
     </div>
   );
 }
