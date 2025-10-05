@@ -12,6 +12,18 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
   const openChat = () => setIsChatOpen(true);
   const closeChat = () => setIsChatOpen(false);
 
+  // Smooth scroll helper that also navigates to Home first if needed
+  const scrollToId = (id: string) => {
+    // Navigate to home view if not already there
+    if (currentPage !== 'home') onNavigate?.('home');
+
+    // Wait for home DOM to mount (next tick), then scroll
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
+  };
+
   const navLink = (label: string, page: Page) => (
     <button
       onClick={() => onNavigate?.(page)}
@@ -41,8 +53,29 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
             <nav className="hidden md:flex items-center space-x-8">
               {navLink('Home', 'home')}
               <a href="#" className="text-gray-300 hover:text-white transition-colors">Password Management</a>
-              <a href="#imageSearch" className="text-gray-300 hover:text-white transition-colors" onClick={() => onNavigate?.('home')}>Image Search</a>
+
+              {/* Smooth scroll to sections on Home */}
+              <button
+                className="text-gray-300 hover:text-white transition-colors"
+                onClick={() => scrollToId('imageSearch')}
+              >
+                Image Search
+              </button>
+              {/* <button
+                className="text-gray-300 hover:text-white transition-colors"
+                onClick={() => scrollToId('about')}
+              >
+                About Us
+              </button>
+              <button
+                className="text-gray-300 hover:text-white transition-colors"
+                onClick={() => scrollToId('contact')}
+              >
+                Contact Us
+              </button> */}
+
               {navLink('Docs', 'docs')}
+
               <div className="relative">
                 <button
                   onClick={() => setIsAboutOpen(!isAboutOpen)}
@@ -55,8 +88,18 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
                 </button>
                 {isAboutOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-slate-700 rounded-md shadow-lg py-1 z-40">
-                    <a href="#about" onClick={() => onNavigate?.('home')} className="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-600 hover:text-white">About Us</a>
-                    <a href="#contact" onClick={() => onNavigate?.('home')} className="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-600 hover:text-white">Contact Us</a>
+                    <button
+                      onClick={() => { scrollToId('about'); setIsAboutOpen(false); }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-slate-600 hover:text-white"
+                    >
+                      About Us
+                    </button>
+                    <button
+                      onClick={() => { scrollToId('contact'); setIsAboutOpen(false); }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-slate-600 hover:text-white"
+                    >
+                      Contact Us
+                    </button>
                   </div>
                 )}
               </div>
@@ -89,11 +132,41 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
           {isMobileMenuOpen && (
             <div className="md:hidden">
               <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-slate-700/90 rounded-md mt-2">
-                <button onClick={() => { onNavigate?.('home'); setIsMobileMenuOpen(false); }} className={`block w-full text-left px-3 py-2 text-base rounded ${currentPage==='home'?'text-white':'text-gray-300 hover:text-white'}`}>Home</button>
+                <button
+                  onClick={() => { onNavigate?.('home'); setIsMobileMenuOpen(false); }}
+                  className={`block w-full text-left px-3 py-2 text-base rounded ${currentPage==='home'?'text-white':'text-gray-300 hover:text-white'}`}
+                >
+                  Home
+                </button>
                 <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">Password Management</a>
-                <button onClick={() => { onNavigate?.('home'); setIsMobileMenuOpen(false); setTimeout(()=>document.getElementById('imageSearch')?.scrollIntoView({behavior:'smooth'}),0); }} className="block w-full text-left px-3 py-2 text-base text-gray-300 hover:text-white">Image Search</button>
-                <button onClick={() => { onNavigate?.('docs'); setIsMobileMenuOpen(false); }} className={`block w-full text-left px-3 py-2 text-base rounded ${currentPage==='docs'?'text-white':'text-gray-300 hover:text-white'}`}>Docs</button>
-                <a href="#about" onClick={() => { onNavigate?.('home'); setIsMobileMenuOpen(false); }} className="text-gray-300 hover:text-white block px-3 py-2 text-base">About</a>
+
+                {/* Smooth scroll buttons */}
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); scrollToId('imageSearch'); }}
+                  className="block w-full text-left px-3 py-2 text-base text-gray-300 hover:text-white"
+                >
+                  Image Search
+                </button>
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); scrollToId('about'); }}
+                  className="block w-full text-left px-3 py-2 text-base text-gray-300 hover:text-white"
+                >
+                  About Us
+                </button>
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); scrollToId('contact'); }}
+                  className="block w-full text-left px-3 py-2 text-base text-gray-300 hover:text-white"
+                >
+                  Contact Us
+                </button>
+
+                <button
+                  onClick={() => { onNavigate?.('docs'); setIsMobileMenuOpen(false); }}
+                  className={`block w-full text-left px-3 py-2 text-base rounded ${currentPage==='docs'?'text-white':'text-gray-300 hover:text-white'}`}
+                >
+                  Docs
+                </button>
+
                 <button
                   onClick={() => { openChat(); setIsMobileMenuOpen(false); }}
                   className="w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md transition-colors mt-2"
@@ -106,7 +179,7 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
         </div>
       </header>
 
-      {/* Drawer mounted outside header so it isn’t clipped; higher z-index */}
+      {/* Drawer mounted outside header so it isn’t clipped */}
       <ChatDrawer isOpen={isChatOpen} onClose={closeChat} />
     </>
   );
