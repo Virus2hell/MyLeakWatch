@@ -71,14 +71,14 @@ const Footer = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Team Members */}
           <div>
-            <h4 className="text-lg font-semibold text-white mb-4">Legal</h4>
+            <h4 className="text-lg font-semibold text-white mb-4">Team Members</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Terms of Use</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Acceptable Use</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Responsible Disclosure</a></li>
+              <li><a className="text-gray-300 hover:text-white transition-colors">Sindhu Ade</a></li>
+              <li><a className="text-gray-300 hover:text-white transition-colors">Shravan Kalambe</a></li>
+              <li><a className="text-gray-300 hover:text-white transition-colors">Uday Mordharya</a></li>
+              <li><a className="text-gray-300 hover:text-white transition-colors">Atharva Narvekar</a></li>
             </ul>
           </div>
         </div>
