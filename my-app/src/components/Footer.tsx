@@ -33,8 +33,8 @@ const Footer = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
               <span className="text-blue-400">My</span>LeakWatch
             </div>
             <p className="text-gray-300 mb-6 max-w-md">
-              Helping millions of people worldwide check if their personal data has been
-              compromised in data breaches. Free, secure, and trusted by security professionals.
+              Helping people check if their personal data has been
+              compromised in data breaches. Free and Secure.
             </p>
             <div className="flex space-x-4">
               <a href="https://github.com/Virus2hell/MyLeakWatch" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noreferrer">
