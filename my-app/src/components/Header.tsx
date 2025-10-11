@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ChatDrawer from './ChatDrawer';
 
 type Page = 'home' | 'docs';
@@ -8,6 +9,9 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const openChat = () => setIsChatOpen(true);
   const closeChat = () => setIsChatOpen(false);
@@ -24,6 +28,10 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
     }, 0);
   };
 
+  const goVault = () => {
+    if (location.pathname !== '/vault') navigate('/vault');
+  };
+
   const navLink = (label: string, page: Page) => (
     <button
       onClick={() => onNavigate?.(page)}
@@ -32,6 +40,11 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
       {label}
     </button>
   );
+
+  const vaultClasses =
+    location.pathname === '/vault'
+      ? 'text-white'
+      : 'text-gray-300 hover:text-white';
 
   return (
     <>
@@ -52,7 +65,15 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               {navLink('Home', 'home')}
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">Password Management</a>
+
+              {/* Password Management → /vault */}
+              <button
+                onClick={goVault}
+                className={`transition-colors ${vaultClasses}`}
+                aria-current={location.pathname === '/vault' ? 'page' : undefined}
+              >
+                Password Management
+              </button>
 
               {/* Smooth scroll to sections on Home */}
               <button
@@ -61,18 +82,6 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
               >
                 Image Search
               </button>
-              {/* <button
-                className="text-gray-300 hover:text-white transition-colors"
-                onClick={() => scrollToId('about')}
-              >
-                About Us
-              </button>
-              <button
-                className="text-gray-300 hover:text-white transition-colors"
-                onClick={() => scrollToId('contact')}
-              >
-                Contact Us
-              </button> */}
 
               {navLink('Docs', 'docs')}
 
@@ -138,7 +147,15 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
                 >
                   Home
                 </button>
-                <a href="#" className="text-gray-300 hover:text-white block px-3 py-2 text-base">Password Management</a>
+
+                {/* Password Management → /vault */}
+                <button
+                  onClick={() => { goVault(); setIsMobileMenuOpen(false); }}
+                  className={`block w-full text-left px-3 py-2 text-base ${vaultClasses}`}
+                  aria-current={location.pathname === '/vault' ? 'page' : undefined}
+                >
+                  Password Management
+                </button>
 
                 {/* Smooth scroll buttons */}
                 <button
