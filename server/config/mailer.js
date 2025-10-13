@@ -1,11 +1,11 @@
 const nodemailer = require('nodemailer');
-const { env } = require('./config');
+const { config } = require('./config');
 
 const transporter = nodemailer.createTransport({
-  host: env.MAIL_HOST,
-  port: env.MAIL_PORT,
+  host: config.MAIL_HOST,
+  port: config.MAIL_PORT,
   secure: true,
-  auth: { user: env.MAIL_USER, pass: env.MAIL_PASS },
+  auth: { user: config.MAIL_USER, pass: config.MAIL_PASS },
 });
 
 module.exports = { transporter };
