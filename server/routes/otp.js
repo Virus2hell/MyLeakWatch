@@ -5,7 +5,7 @@ const { Credential } = require('../models/Credential');
 const { Audit } = require('../models/Audit');
 const { transporter } = require('../config/mailer');
 const { generateOtp, hashOtp, verifyOtpHash, expiryDate } = require('../utils/otp');
-const { env } = require('../config/env');
+const { env } = require('../config/config');
 
 const router = Router();
 router.use(authRequired);

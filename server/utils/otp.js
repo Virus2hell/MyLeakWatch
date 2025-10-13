@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const { env } = require('../config/env');
+const { env } = require('../config/config');
 
 function generateOtp() {
   const n = crypto.randomInt(0, 1_000_000);

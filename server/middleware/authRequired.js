@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { env } = require('../config/env');
+const { env } = require('../config/config');
 
 function authRequired(req, res, next) {
   const token = req.cookies && req.cookies.sid;
