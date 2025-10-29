@@ -1,5 +1,5 @@
 import React from 'react';
-import {LucideImagePlus, LucideLockKeyhole, Brain, LucideMailSearch } from 'lucide-react';
+import {LucideImagePlus, LucideLockKeyhole, Brain, LucideMailSearch, LucidePhoneCall, MonitorSmartphoneIcon, LucideKeyRound, LucideBookOpenText } from 'lucide-react';
 
 const AboutUs = () => {
   const features = [
@@ -24,22 +24,22 @@ const AboutUs = () => {
       description: 'On‑site assistant that explains breach results, prioritizes what to fix, and walks through step‑by‑step remediation in plain language.'
     },
     {
-      icon: Brain,
+      icon: LucideKeyRound,
       title: 'Password Checker',
       description: 'Instantly evaluate password strength and reuse with local hashing and guidance to create safer alternatives.'
     },
     {
-      icon: Brain,
+      icon: LucideBookOpenText,
       title: 'Docs',
       description: 'Quick, plain-language guides on breaches, prevention, and post-incident steps, plus FAQs and checklists for fast action.'
     },
     {
-      icon: Brain,
+      icon: LucidePhoneCall,
       title: 'Contact Support',
       description: 'Reach the team via form or email for issues, takedown requests, and security disclosures with prioritized follow‑ups.'
     },
     {
-      icon: Brain,
+      icon: MonitorSmartphoneIcon,
       title: 'Responsive Design',
       description: 'Optimized for mobile, tablet, and desktop with accessible typography and touch-friendly controls.'
     },
