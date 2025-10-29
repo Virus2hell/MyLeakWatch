@@ -33,6 +33,11 @@ const AboutUs = () => {
       title: 'Docs',
       description: 'Quick, plain-language guides on breaches, prevention, and post-incident steps, plus FAQs and checklists for fast action.'
     },
+    {
+      icon: Brain,
+      title: 'Contact Support',
+      description: 'Reach the team via form or email for issues, takedown requests, and security disclosures with prioritized follow‑ups.'
+    },
   ];
 
   return (
