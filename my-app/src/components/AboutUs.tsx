@@ -38,6 +38,11 @@ const AboutUs = () => {
       title: 'Contact Support',
       description: 'Reach the team via form or email for issues, takedown requests, and security disclosures with prioritized follow‑ups.'
     },
+    {
+      icon: Brain,
+      title: 'Responsive Design',
+      description: 'Optimized for mobile, tablet, and desktop with accessible typography and touch-friendly controls.'
+    },
   ];
 
   return (
