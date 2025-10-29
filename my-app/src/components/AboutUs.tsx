@@ -22,6 +22,11 @@ const AboutUs = () => {
       icon: Brain,
       title: 'Chat with AI',
       description: 'On‑site assistant that explains breach results, prioritizes what to fix, and walks through step‑by‑step remediation in plain language.'
+    },
+    {
+      icon: Brain,
+      title: 'Docs',
+      description: 'Quick, plain-language guides on breaches, prevention, and post-incident steps, plus FAQs and checklists for fast action.'
     }
   ];
 
