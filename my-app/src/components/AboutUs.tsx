@@ -25,9 +25,14 @@ const AboutUs = () => {
     },
     {
       icon: Brain,
+      title: 'Password Checker',
+      description: 'Instantly evaluate password strength and reuse with local hashing and guidance to create safer alternatives.'
+    },
+    {
+      icon: Brain,
       title: 'Docs',
       description: 'Quick, plain-language guides on breaches, prevention, and post-incident steps, plus FAQs and checklists for fast action.'
-    }
+    },
   ];
 
   return (
