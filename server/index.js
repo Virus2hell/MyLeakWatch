@@ -5,7 +5,6 @@ const axios = require('axios');
 const multer = require('multer');
 const FormData = require('form-data');
 const fs = require('fs');
-//const fetch = require('node-fetch');
 
 const app = express();
 app.use(cors());
@@ -18,90 +17,83 @@ app.use('/api/contact', contactRoute);
 // multer temp storage for image search
 const upload = multer({ dest: 'uploads/' });
 
-/**
- * =========================
- * Local Chat via Ollama (OpenAI-compatible)
- * POST /api/chat
- * Body: { messages: [{role:'user'|'assistant', content:string}, ...] }
- * Streams plain text chunks back to the client.
- * =========================
- */
-app.post('/api/chat', async (req, res) => {
+// QUICK DIAG: list accessible models for your key
+app.get('/api/_gemini/models', async (_req, res) => {
   try {
-    const upstreamUrl = 'http://127.0.0.1:11434/v1/chat/completions';
-    const model = process.env.LOCAL_MODEL || 'llama3.1:8b';
-
-    const inputMsgs = Array.isArray(req.body?.messages) ? req.body.messages : [];
-    const safe = inputMsgs.slice(-20).map(m => ({
-      role: m.role === 'assistant' ? 'assistant' : 'user',
-      content: String(m.content || '').slice(0, 3000)
-    }));
-
-    const system = {
-      role: 'system',
-      content:
-        'You are a cybersecurity safety assistant for MyLeakWatch. Answer concisely about breaches, passwords, credential stuffing, phishing, reverse image search, and safe breach‑check usage. Never ask for passwords or secrets.'
-    };
-
-    const body = { model, messages: [system, ...safe], stream: true, temperature: 0.3 };
-
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.setHeader('Transfer-Encoding', 'chunked');
-
-    const upstream = await fetch(upstreamUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-
-    console.log('[ollama] status:', upstream.status);
-
-    if (!upstream.ok || !upstream.body) {
-      const text = await upstream.text();
-      console.error('[ollama] upstream error', upstream.status, text);
-      res.status(upstream.status).end(text || 'Upstream error');
-      return;
-    }
-
-    const reader = upstream.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
-
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith('data:')) continue;
-        const data = trimmed.slice(5).trim();
-        if (!data) continue;
-        if (data === '[DONE]') { res.end(); return; }
-        try {
-          const json = JSON.parse(data);
-          const delta = json?.choices?.[0]?.delta?.content || '';
-          if (delta) res.write(delta);
-        } catch {
-          console.error('[ollama] parse error line:', data.slice(0, 200));
-        }
-      }
-    }
-
-    res.end();
-  } catch (err) {
-    console.error('[ollama] handler error:', err?.stack || err?.message);
-    res.status(500).end('Server error');
+    const apiKey = process.env.GEMINI_API_KEY;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+    const r = await axios.get(url, { validateStatus: () => true });
+    return res.status(r.status).json(r.data);
+  } catch (e) {
+    return res.status(500).json({ error: String(e?.message || e) });
   }
 });
 
+/**
+ * Chat via Google Gemini API (v1beta, gemini-1.0-pro)
+ */
+app.post('/api/chat', async (req, res) => {
+  try {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) return res.status(500).json({ error: 'Missing GEMINI_API_KEY in environment' });
 
+    const inputMsgs = Array.isArray(req.body?.messages) ? req.body.messages : [];
+
+    const contents = inputMsgs.slice(-20).map(m => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: String(m.content || '').slice(0, 3000) }]
+    }));
+
+    // Use gemini-1.0-pro on v1beta (widely available)
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${apiKey}`;
+
+    const requestBody = {
+      contents,
+      generationConfig: {
+        temperature: 0.3,
+        topP: 0.95,
+        topK: 40,
+        maxOutputTokens: 1024
+      },
+      safetySettings: [
+        { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
+      ],
+      systemInstruction: {
+        role: 'user',
+        parts: [{
+          text: 'You are a cybersecurity safety assistant for MyLeakWatch. Answer concisely about breaches, passwords, credential stuffing, phishing, reverse image search, and safe breach‑check usage. Never ask for passwords or secrets.'
+        }]
+      }
+    };
+
+    const geminiResp = await axios.post(geminiUrl, requestBody, {
+      headers: { 'Content-Type': 'application/json' },
+      validateStatus: () => true,
+      timeout: 30000
+    });
+
+    if (geminiResp.status !== 200) {
+      return res.status(geminiResp.status).json({ error: 'Gemini API error', details: geminiResp.data });
+    }
+
+    const text =
+      geminiResp.data?.candidates?.[0]?.content?.parts
+        ?.map(p => p?.text || '')
+        .join('') || '';
+
+    if (!text) return res.status(500).json({ error: 'No response from Gemini API' });
+
+    return res.json({ ok: true, content: text });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error', details: err?.message });
+  }
+});
 
 /**
- * ========== HIBP: Check email ==========
+ * HIBP endpoint (unchanged)
  */
 app.post('/api/check-email', async (req, res) => {
   try {
@@ -118,26 +110,18 @@ app.post('/api/check-email', async (req, res) => {
 
     const response = await axios.get(hibpUrl, { headers, validateStatus: () => true });
 
-    if (response.status === 200) {
-      return res.json({ found: true, breaches: response.data });
-    }
-    if (response.status === 404) {
-      return res.json({ found: false, breaches: [] });
-    }
-    if (response.status === 429) {
-      return res.status(429).json({ error: 'Rate limited by HIBP. Try again later.' });
-    }
-    console.error('HIBP error', response.status, response.data);
+    if (response.status === 200) return res.json({ found: true, breaches: response.data });
+    if (response.status === 404) return res.json({ found: false, breaches: [] });
+    if (response.status === 429) return res.status(429).json({ error: 'Rate limited by HIBP. Try again later.' });
+
     return res.status(500).json({ error: 'HIBP error', details: response.data });
   } catch (err) {
-    console.error('HIBP exception', err.message);
     res.status(500).json({ error: 'server error', details: err.message });
   }
 });
 
-
 /**
- * ========== Image reverse search via Bing Visual Search ==========
+ * Bing Visual Search (unchanged)
  */
 app.post('/api/check-image', upload.single('image'), async (req, res) => {
   try {
@@ -172,11 +156,9 @@ app.post('/api/check-image', upload.single('image'), async (req, res) => {
     if (bingResp.status >= 200 && bingResp.status < 300) {
       return res.json({ ok: true, results: bingResp.data });
     } else {
-      console.error('Bing Visual Search error', bingResp.status, bingResp.data);
       return res.status(500).json({ error: 'visual search error', details: bingResp.data });
     }
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: 'server error', details: err.message });
   }
 });

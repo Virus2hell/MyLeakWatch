@@ -43,50 +43,15 @@ export default function useChat() {
         signal: controller.signal
       });
 
-      // Surface HTTP errors with body text for quick diagnosis
       if (!resp.ok) {
         const txt = await safeReadText(resp);
         throw new Error(`HTTP ${resp.status}: ${txt || 'Upstream error'}`);
       }
 
-      // If the environment/browser doesn’t support streaming, fall back to full JSON parse
-      if (!resp.body) {
-        try {
-          const data = await resp.json();
-          const content =
-            data?.choices?.[0]?.message?.content ??
-            data?.choices?.[0]?.delta?.content ??
-            '';
-          if (content) {
-            appendAssistant(content);
-            return;
-          }
-          throw new Error('No stream and no JSON content');
-        } catch {
-          throw new Error('No response body (stream unsupported)');
-        }
-      }
-
-      // STREAMING PATH
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-
-      let assistant: Msg = { role: 'assistant', content: '' };
-      setMessages(cur => [...cur, assistant]);
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-
-        // Append chunk to the last assistant message
-        assistant = { role: 'assistant', content: assistant.content + chunk };
-        setMessages(cur => {
-          const copy = [...cur];
-          copy[copy.length - 1] = assistant;
-          return copy;
-        });
-      }
+      const data = await resp.json();
+      const content = data?.content || '';
+      if (!content) throw new Error('Empty response');
+      appendAssistant(content);
     } catch (e: any) {
       const msg = typeof e?.message === 'string' ? e.message : 'Unknown error';
       appendAssistant(`Error: ${msg}`);
@@ -105,7 +70,6 @@ export default function useChat() {
   return { messages, send, loading, stop, clear };
 }
 
-// Safely read text; if JSON, stringify for visibility
 async function safeReadText(resp: Response): Promise<string> {
   try {
     const ct = resp.headers.get('content-type') || '';
