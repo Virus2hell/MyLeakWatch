@@ -17,83 +17,77 @@ app.use('/api/contact', contactRoute);
 // multer temp storage for image search
 const upload = multer({ dest: 'uploads/' });
 
-// QUICK DIAG: list accessible models for your key
-app.get('/api/_gemini/models', async (_req, res) => {
-  try {
-    const apiKey = process.env.GEMINI_API_KEY;
-    const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-    const r = await axios.get(url, { validateStatus: () => true });
-    return res.status(r.status).json(r.data);
-  } catch (e) {
-    return res.status(500).json({ error: String(e?.message || e) });
-  }
-});
-
 /**
- * Chat via Google Gemini API (v1beta, gemini-1.0-pro)
+ * =========================
+ * Chat via OpenRouter (OpenAI-compatible)
+ * POST /api/chat
+ * Body: { messages: [{role:'user'|'assistant', content:string}, ...] }
+ * Returns JSON { ok: true, content: string }
+ * =========================
  */
 app.post('/api/chat', async (req, res) => {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) return res.status(500).json({ error: 'Missing GEMINI_API_KEY in environment' });
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: 'Missing OPENROUTER_API_KEY in environment' });
+    }
 
+    // Keep transcript small to control tokens and avoid rate limits
     const inputMsgs = Array.isArray(req.body?.messages) ? req.body.messages : [];
-
-    const contents = inputMsgs.slice(-20).map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: String(m.content || '').slice(0, 3000) }]
+    const clipped = inputMsgs.slice(-12).map(m => ({
+      role: m.role === 'assistant' ? 'assistant' : 'user',
+      content: String(m.content || '').slice(0, 1500)
     }));
 
-    // Use gemini-1.0-pro on v1beta (widely available)
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${apiKey}`;
-
-    const requestBody = {
-      contents,
-      generationConfig: {
-        temperature: 0.3,
-        topP: 0.95,
-        topK: 40,
-        maxOutputTokens: 1024
-      },
-      safetySettings: [
-        { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
-        { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
-        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
-        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
-      ],
-      systemInstruction: {
-        role: 'user',
-        parts: [{
-          text: 'You are a cybersecurity safety assistant for MyLeakWatch. Answer concisely about breaches, passwords, credential stuffing, phishing, reverse image search, and safe breach‑check usage. Never ask for passwords or secrets.'
-        }]
-      }
+    // System prompt for safety and product alignment
+    const system = {
+      role: 'system',
+      content:
+        'You are a cybersecurity safety assistant for MyLeakWatch. Answer concisely about breaches, passwords, credential stuffing, phishing, reverse image search, and safe breach‑check usage. Never ask for passwords or secrets.'
     };
 
-    const geminiResp = await axios.post(geminiUrl, requestBody, {
-      headers: { 'Content-Type': 'application/json' },
-      validateStatus: () => true,
-      timeout: 30000
+    const body = {
+      model: 'mistralai/mistral-7b-instruct:free', // choose a free model; swap as needed
+      messages: [system, ...clipped],
+      temperature: 0.3,
+      max_tokens: 800
+    };
+
+    const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        // Optional but recommended headers for OpenRouter analytics
+        'HTTP-Referer': 'https://myleakwatch.local',
+        'X-Title': 'MyLeakWatch'
+      },
+      body: JSON.stringify(body)
     });
 
-    if (geminiResp.status !== 200) {
-      return res.status(geminiResp.status).json({ error: 'Gemini API error', details: geminiResp.data });
+    const data = await r.json();
+    if (!r.ok) {
+      return res.status(r.status).json({ error: 'OpenRouter error', details: data });
     }
 
     const text =
-      geminiResp.data?.candidates?.[0]?.content?.parts
-        ?.map(p => p?.text || '')
-        .join('') || '';
+      data?.choices?.[0]?.message?.content ??
+      data?.choices?.[0]?.delta?.content ??
+      '';
 
-    if (!text) return res.status(500).json({ error: 'No response from Gemini API' });
+    if (!text) {
+      return res.status(500).json({ error: 'No content from model', details: data });
+    }
 
     return res.json({ ok: true, content: text });
   } catch (err) {
+    console.error('[openrouter] handler error:', err?.stack || err?.message);
     res.status(500).json({ error: 'Server error', details: err?.message });
   }
 });
 
 /**
- * HIBP endpoint (unchanged)
+ * ========== HIBP: Check email ==========
  */
 app.post('/api/check-email', async (req, res) => {
   try {
@@ -110,10 +104,15 @@ app.post('/api/check-email', async (req, res) => {
 
     const response = await axios.get(hibpUrl, { headers, validateStatus: () => true });
 
-    if (response.status === 200) return res.json({ found: true, breaches: response.data });
-    if (response.status === 404) return res.json({ found: false, breaches: [] });
-    if (response.status === 429) return res.status(429).json({ error: 'Rate limited by HIBP. Try again later.' });
-
+    if (response.status === 200) {
+      return res.json({ found: true, breaches: response.data });
+    }
+    if (response.status === 404) {
+      return res.json({ found: false, breaches: [] });
+    }
+    if (response.status === 429) {
+      return res.status(429).json({ error: 'Rate limited by HIBP. Try again later.' });
+    }
     return res.status(500).json({ error: 'HIBP error', details: response.data });
   } catch (err) {
     res.status(500).json({ error: 'server error', details: err.message });
@@ -121,7 +120,7 @@ app.post('/api/check-email', async (req, res) => {
 });
 
 /**
- * Bing Visual Search (unchanged)
+ * ========== Image reverse search via Bing Visual Search ==========
  */
 app.post('/api/check-image', upload.single('image'), async (req, res) => {
   try {
