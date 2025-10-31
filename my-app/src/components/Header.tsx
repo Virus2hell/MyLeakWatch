@@ -3,23 +3,29 @@ import { ChevronDown, Menu, X } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ChatDrawer from './ChatDrawer';
 
-type Page = 'home' | 'docs';
+
+type Page = 'home' | 'docs' | 'stats';
+
 
 const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; currentPage?: Page }) => {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
+
   const navigate = useNavigate();
   const location = useLocation();
 
+
   const openChat = () => setIsChatOpen(true);
   const closeChat = () => setIsChatOpen(false);
+
 
   // Smooth scroll helper that also navigates to Home first if needed
   const scrollToId = (id: string) => {
     // Navigate to home view if not already there
     if (currentPage !== 'home') onNavigate?.('home');
+
 
     // Wait for home DOM to mount (next tick), then scroll
     setTimeout(() => {
@@ -28,9 +34,15 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
     }, 0);
   };
 
+
   const goVault = () => {
     if (location.pathname !== '/vault') navigate('/vault');
   };
+
+  const goStats = () => {
+    if (location.pathname !== '/stats') navigate('/stats');
+  };
+
 
   const navLink = (label: string, page: Page) => (
     <button
@@ -41,10 +53,17 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
     </button>
   );
 
+
   const vaultClasses =
     location.pathname === '/vault'
       ? 'text-white'
       : 'text-gray-300 hover:text-white';
+
+  const statsClasses =
+    location.pathname === '/stats'
+      ? 'text-white'
+      : 'text-gray-300 hover:text-white';
+
 
   return (
     <>
@@ -62,9 +81,11 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
               </div>
             </div>
 
+
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               {navLink('Home', 'home')}
+
 
               {/* Password Management → /vault */}
               <button
@@ -75,6 +96,7 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
                 Password Management
               </button>
 
+
               {/* Smooth scroll to sections on Home */}
               <button
                 className="text-gray-300 hover:text-white transition-colors"
@@ -83,7 +105,18 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
                 Image Search
               </button>
 
+              {/* Stats */}
+              <button
+                onClick={goStats}
+                className={`transition-colors ${statsClasses}`}
+                aria-current={location.pathname === '/map' ? 'page' : undefined}
+              >
+                Visual Map
+              </button>
+
+
               {navLink('Docs', 'docs')}
+
 
               <div className="relative">
                 <button
@@ -114,6 +147,7 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
               </div>
             </nav>
 
+
             {/* Chat button (desktop) */}
             <div className="hidden md:flex items-center">
               <button
@@ -123,6 +157,7 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
                 Chat With AI
               </button>
             </div>
+
 
             {/* Mobile menu button */}
             <div className="md:hidden">
@@ -137,6 +172,7 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
             </div>
           </div>
 
+
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
             <div className="md:hidden">
@@ -148,6 +184,7 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
                   Home
                 </button>
 
+
                 {/* Password Management → /vault */}
                 <button
                   onClick={() => { goVault(); setIsMobileMenuOpen(false); }}
@@ -157,6 +194,7 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
                   Password Management
                 </button>
 
+
                 {/* Smooth scroll buttons */}
                 <button
                   onClick={() => { setIsMobileMenuOpen(false); scrollToId('imageSearch'); }}
@@ -164,6 +202,16 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
                 >
                   Image Search
                 </button>
+
+                {/* Stats */}
+                <button
+                  onClick={() => { goStats(); setIsMobileMenuOpen(false); }}
+                  className={`block w-full text-left px-3 py-2 text-base ${statsClasses}`}
+                  aria-current={location.pathname === '/map' ? 'page' : undefined}
+                >
+                  Visual Map
+                </button>
+
                 <button
                   onClick={() => { setIsMobileMenuOpen(false); scrollToId('about'); }}
                   className="block w-full text-left px-3 py-2 text-base text-gray-300 hover:text-white"
@@ -177,12 +225,14 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
                   Contact Us
                 </button>
 
+
                 <button
                   onClick={() => { onNavigate?.('docs'); setIsMobileMenuOpen(false); }}
                   className={`block w-full text-left px-3 py-2 text-base rounded ${currentPage==='docs'?'text-white':'text-gray-300 hover:text-white'}`}
                 >
                   Docs
                 </button>
+
 
                 <button
                   onClick={() => { openChat(); setIsMobileMenuOpen(false); }}
@@ -196,10 +246,12 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
         </div>
       </header>
 
-      {/* Drawer mounted outside header so it isn’t clipped */}
+
+      {/* Drawer mounted outside header so it isn't clipped */}
       <ChatDrawer isOpen={isChatOpen} onClose={closeChat} />
     </>
   );
 };
+
 
 export default Header;
