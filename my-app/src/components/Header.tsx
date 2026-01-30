@@ -1,129 +1,110 @@
-import React, { useState } from 'react';
-import { ChevronDown, Menu, X } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import ChatDrawer from './ChatDrawer';
+import React, { useState } from "react"
+import { ChevronDown, Menu, X } from "lucide-react"
+import { useNavigate, useLocation } from "react-router-dom"
+import ChatDrawer from "./ChatDrawer"
 
-type Page = 'home' | 'docs' | 'stats';
+const Header = () => {
+  const [isAboutOpen, setIsAboutOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
-const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; currentPage?: Page }) => {
-  const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const navigate = useNavigate()
+  const location = useLocation()
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  const openChat = () => setIsChatOpen(true)
+  const closeChat = () => setIsChatOpen(false)
 
-  const openChat = () => setIsChatOpen(true);
-  const closeChat = () => setIsChatOpen(false);
-
-  // Smooth scroll helper that also navigates to Home first if needed
+  // Scroll helper (auto-goes to home)
   const scrollToId = (id: string) => {
-    // Navigate to home view if not already there
-    if (currentPage !== 'home') onNavigate?.('home');
+    if (location.pathname !== "/") {
+      navigate("/")
+      setTimeout(() => {
+        const el = document.getElementById(id)
+        el?.scrollIntoView({ behavior: "smooth", block: "start" })
+      }, 100)
+    } else {
+      const el = document.getElementById(id)
+      el?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }
 
-    // Wait for home DOM to mount (next tick), then scroll
-    setTimeout(() => {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 0);
-  };
-
-  const goBreachMonitor = () => {
-    if (location.pathname !== '/breach-monitor') navigate('/breach-monitor');
-  };
-
-  const goStats = () => {
-    if (location.pathname !== '/stats') navigate('/stats');
-  };
-
-  const navLink = (label: string, page: Page) => (
-    <button
-      onClick={() => onNavigate?.(page)}
-      className={`transition-colors ${currentPage === page ? 'text-white' : 'text-gray-300 hover:text-white'}`}
-    >
-      {label}
-    </button>
-  );
-
-  const breachMonitorClasses =
-    location.pathname === '/breach-monitor'
-      ? 'text-white'
-      : 'text-gray-300 hover:text-white';
-
-  const statsClasses =
-    location.pathname === '/stats'
-      ? 'text-white'
-      : 'text-gray-300 hover:text-white';
+  const isActive = (path: string) =>
+    location.pathname === path ? "text-white" : "text-gray-300 hover:text-white"
 
   return (
     <>
-      <header className="bg-slate-900 backdrop-blur-sm border-b border-slate-700/50 relative z-30">
+      <header className="bg-slate-900 border-b border-slate-700/50 relative z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
+
             {/* Logo */}
-            <div className="flex items-center">
-              <div
-                className="text-2xl font-bold text-white cursor-pointer"
-                onClick={() => onNavigate?.('home')}
-                aria-label="MyLeakWatch Home"
-              >
-                <span className="text-blue-400">My</span>LeakWatch
-              </div>
+            <div
+              className="text-2xl font-bold text-white cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              <span className="text-blue-400">My</span>LeakWatch
             </div>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Nav */}
             <nav className="hidden md:flex items-center space-x-8">
-              {navLink('Home', 'home')}
+              <button onClick={() => navigate("/")} className={isActive("/")}>
+                Home
+              </button>
 
-              {/* Breach Monitor → /breach-monitor */}
               <button
-                onClick={goBreachMonitor}
-                className={`transition-colors ${breachMonitorClasses}`}
-                aria-current={location.pathname === '/breach-monitor' ? 'page' : undefined}
+                onClick={() => navigate("/breach-monitor")}
+                className={isActive("/breach-monitor")}
               >
                 Breach Monitor
               </button>
 
-              {/* Smooth scroll to sections on Home */}
               <button
-                className="text-gray-300 hover:text-white transition-colors"
-                onClick={() => scrollToId('imageSearch')}
+                onClick={() => scrollToId("imageSearch")}
+                className="text-gray-300 hover:text-white"
               >
                 Image Search
               </button>
 
-              {/* Stats */}
               <button
-                onClick={goStats}
-                className={`transition-colors ${statsClasses}`}
-                aria-current={location.pathname === '/stats' ? 'page' : undefined}
+                onClick={() => navigate("/stats")}
+                className={isActive("/stats")}
               >
                 Visual Map
               </button>
 
-              {navLink('Docs', 'docs')}
+              <button
+                onClick={() => navigate("/docs")}
+                className={isActive("/docs")}
+              >
+                Docs
+              </button>
 
+              {/* About Dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setIsAboutOpen(!isAboutOpen)}
-                  className="flex items-center text-gray-300 hover:text-white transition-colors"
-                  aria-haspopup="menu"
-                  aria-expanded={isAboutOpen}
+                  className="flex items-center text-gray-300 hover:text-white"
                 >
-                  About
-                  <ChevronDown className="ml-1 h-4 w-4" />
+                  About <ChevronDown className="ml-1 h-4 w-4" />
                 </button>
+
                 {isAboutOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-slate-700 rounded-md shadow-lg py-1 z-40">
+                  <div className="absolute right-0 mt-2 w-48 bg-slate-700 rounded-md shadow-lg z-40">
                     <button
-                      onClick={() => { scrollToId('about'); setIsAboutOpen(false); }}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-slate-600 hover:text-white"
+                      onClick={() => {
+                        scrollToId("about")
+                        setIsAboutOpen(false)
+                      }}
+                      className="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-slate-600 hover:text-white"
                     >
                       About Us
                     </button>
                     <button
-                      onClick={() => { scrollToId('contact'); setIsAboutOpen(false); }}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-slate-600 hover:text-white"
+                      onClick={() => {
+                        scrollToId("contact")
+                        setIsAboutOpen(false)
+                      }}
+                      className="block w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-slate-600 hover:text-white"
                     >
                       Contact Us
                     </button>
@@ -132,102 +113,56 @@ const Header = ({ onNavigate, currentPage }: { onNavigate?: (p: Page) => void; c
               </div>
             </nav>
 
-            {/* Chat button (desktop) */}
-            <div className="hidden md:flex items-center">
+            {/* Chat Button */}
+            <div className="hidden md:block">
               <button
                 onClick={openChat}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md"
               >
                 Chat With AI
               </button>
             </div>
 
-            {/* Mobile menu button */}
+            {/* Mobile Menu Toggle */}
             <div className="md:hidden">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-gray-300 hover:text-white"
-                aria-label="Toggle menu"
-                aria-expanded={isMobileMenuOpen}
-              >
-                {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                {isMobileMenuOpen ? <X /> : <Menu />}
               </button>
             </div>
           </div>
 
-          {/* Mobile Navigation */}
+          {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="md:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-slate-700/90 rounded-md mt-2">
-                <button
-                  onClick={() => { onNavigate?.('home'); setIsMobileMenuOpen(false); }}
-                  className={`block w-full text-left px-3 py-2 text-base rounded ${currentPage==='home'?'text-white':'text-gray-300 hover:text-white'}`}
-                >
-                  Home
-                </button>
-
-                {/* Breach Monitor → /breach-monitor */}
-                <button
-                  onClick={() => { goBreachMonitor(); setIsMobileMenuOpen(false); }}
-                  className={`block w-full text-left px-3 py-2 text-base ${breachMonitorClasses}`}
-                  aria-current={location.pathname === '/breach-monitor' ? 'page' : undefined}
-                >
-                  Breach Monitor
-                </button>
-
-                {/* Smooth scroll buttons */}
-                <button
-                  onClick={() => { setIsMobileMenuOpen(false); scrollToId('imageSearch'); }}
-                  className="block w-full text-left px-3 py-2 text-base text-gray-300 hover:text-white"
-                >
-                  Image Search
-                </button>
-
-                {/* Stats */}
-                <button
-                  onClick={() => { goStats(); setIsMobileMenuOpen(false); }}
-                  className={`block w-full text-left px-3 py-2 text-base ${statsClasses}`}
-                  aria-current={location.pathname === '/stats' ? 'page' : undefined}
-                >
-                  Visual Map
-                </button>
-
-                <button
-                  onClick={() => { setIsMobileMenuOpen(false); scrollToId('about'); }}
-                  className="block w-full text-left px-3 py-2 text-base text-gray-300 hover:text-white"
-                >
-                  About Us
-                </button>
-                <button
-                  onClick={() => { setIsMobileMenuOpen(false); scrollToId('contact'); }}
-                  className="block w-full text-left px-3 py-2 text-base text-gray-300 hover:text-white"
-                >
-                  Contact Us
-                </button>
-
-                <button
-                  onClick={() => { onNavigate?.('docs'); setIsMobileMenuOpen(false); }}
-                  className={`block w-full text-left px-3 py-2 text-base rounded ${currentPage==='docs'?'text-white':'text-gray-300 hover:text-white'}`}
-                >
-                  Docs
-                </button>
-
-                <button
-                  onClick={() => { openChat(); setIsMobileMenuOpen(false); }}
-                  className="w-full text-left bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md transition-colors mt-2"
-                >
-                  Chat With AI
-                </button>
-              </div>
+            <div className="md:hidden bg-slate-700/90 rounded-md mt-2 p-2 space-y-1">
+              <button onClick={() => navigate("/")} className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white">
+                Home
+              </button>
+              <button onClick={() => navigate("/breach-monitor")} className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white">
+                Breach Monitor
+              </button>
+              <button onClick={() => scrollToId("imageSearch")} className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white">
+                Image Search
+              </button>
+              <button onClick={() => navigate("/stats")} className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white">
+                Visual Map
+              </button>
+              <button onClick={() => navigate("/docs")} className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white">
+                Docs
+              </button>
+              <button
+                onClick={openChat}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md mt-2"
+              >
+                Chat With AI
+              </button>
             </div>
           )}
         </div>
       </header>
 
-      {/* Drawer mounted outside header so it isn't clipped */}
       <ChatDrawer isOpen={isChatOpen} onClose={closeChat} />
     </>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

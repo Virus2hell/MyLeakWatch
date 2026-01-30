@@ -8,6 +8,8 @@ import EmailChecker from './components/EmailChecker';
 import Contact from './components/Contact';
 import Docs from './components/Docs';
 import BreachMonitor from './components/BreachMonitoring';
+import { VisualMaps } from './components/dashboard/VisualMaps';
+import { mockAttacks } from './data/mockAttackData';
 
 function AppContent() {
   const location = useLocation();
@@ -30,6 +32,7 @@ function AppContent() {
         <Route path="/" element={<HomeScreen />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/breach-monitor" element={<BreachMonitor />} />
+        <Route path="/stats" element={<VisualMaps attacks={mockAttacks} />} />
       </Routes>
 
       <Footer />

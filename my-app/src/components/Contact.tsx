@@ -35,7 +35,7 @@ export default function Contact() {
   };
 
   return (
-    <div id="contact" className="flex flex-col items-center justify-center py-20 px-4 text-center bg-slate-800">
+    <div id="contact" className="flex flex-col items-center justify-center py-20 px-4 text-center bg-[#0b0f1a]">
       <h2 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
         Contact Us
       </h2>

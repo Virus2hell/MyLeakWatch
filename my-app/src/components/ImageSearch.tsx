@@ -37,7 +37,7 @@ export default function ImageSearch() {
   }
 
   return (
-    <section id='imageSearch' className="min-h-screen bg-gradient-to-br bg-slate-800 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <section id='imageSearch' className="min-h-screen bg-gradient-to-br bg-[#0b0f1a] flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col items-center justify-center text-center py-20 px-4">
         {/* Main Heading */}
         <div className="mb-8">
