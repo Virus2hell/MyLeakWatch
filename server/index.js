@@ -27,9 +27,9 @@ const upload = multer({ dest: 'uploads/' });
  */
 app.post('/api/chat', async (req, res) => {
   try {
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
-      return res.status(500).json({ error: 'Missing OPENROUTER_API_KEY in environment' });
+      return res.status(500).json({ error: 'Missing GROQ_API_KEY in environment' });
     }
 
     // Keep transcript small to control tokens and avoid rate limits
@@ -41,33 +41,37 @@ app.post('/api/chat', async (req, res) => {
 
     // System prompt for safety and product alignment
     const system = {
-      role: 'system',
-      content:
-        'You are a cybersecurity safety assistant for MyLeakWatch. Answer concisely about breaches, passwords, credential stuffing, phishing, reverse image search, and safe breach‑check usage. Never ask for passwords or secrets.'
-    };
+  role: 'system',
+  content: `You are a cybersecurity safety assistant for MyLeakWatch. Answer concisely about breaches, passwords, credential stuffing, phishing, and safe breach-check usage. Never ask for passwords or secrets.
+
+**Format responses cleanly:**
+- Use ## Headers (max 4 words)
+- Short bullet lists (- format)
+- 1-2 sentences per bullet
+- No bold text or numbering
+- Keep total response under 200 words`
+};
 
     const body = {
-      model: 'mistralai/mistral-7b-instruct:free', // choose a free model; swap as needed
+      model: 'llama-3.1-8b-instant', // Fast Groq model; swap as needed (e.g., 'mixtral-8x7b-32768', 'llama-3.3-70b-versatile')
       messages: [system, ...clipped],
       temperature: 0.3,
       max_tokens: 800
     };
 
-    const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        // Optional but recommended headers for OpenRouter analytics
-        'HTTP-Referer': 'https://myleakwatch.local',
-        'X-Title': 'MyLeakWatch'
+        'Authorization': `Bearer ${apiKey}`
+        // No need for HTTP-Referer or X-Title with Groq
       },
       body: JSON.stringify(body)
     });
 
     const data = await r.json();
     if (!r.ok) {
-      return res.status(r.status).json({ error: 'OpenRouter error', details: data });
+      return res.status(r.status).json({ error: 'Groq error', details: data });
     }
 
     const text =
@@ -81,10 +85,11 @@ app.post('/api/chat', async (req, res) => {
 
     return res.json({ ok: true, content: text });
   } catch (err) {
-    console.error('[openrouter] handler error:', err?.stack || err?.message);
+    console.error('[groq] handler error:', err?.stack || err?.message);
     res.status(500).json({ error: 'Server error', details: err?.message });
   }
 });
+
 
 /**
  * ========== HIBP: Check email ==========
