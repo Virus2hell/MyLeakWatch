@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import AboutUs from './components/AboutUs';
 import Footer from './components/Footer';
@@ -7,12 +7,10 @@ import ImageSearch from './components/ImageSearch';
 import EmailChecker from './components/EmailChecker';
 import Contact from './components/Contact';
 import Docs from './components/Docs';
-import VaultPage from './components/PasswordManager/VaultPage';
+import BreachMonitor from './components/BreachMonitoring';
 
-type Page = 'home' | 'docs';
-
-function App() {
-  const [page, setPage] = useState<Page>('home');
+function AppContent() {
+  const location = useLocation();
 
   const HomeScreen = () => (
     <>
@@ -24,21 +22,25 @@ function App() {
   );
 
   return (
+    <div className="min-h-screen">
+      {/* Removed onNavigate prop - Header handles router navigation internally */}
+      <Header />
+
+      <Routes>
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/docs" element={<Docs />} />
+        <Route path="/breach-monitor" element={<BreachMonitor />} />
+      </Routes>
+
+      <Footer />
+    </div>
+  );
+}
+
+function App() {
+  return (
     <BrowserRouter>
-      <div className="min-h-screen">
-        <Header onNavigate={setPage} currentPage={page} />
-
-        <Routes>
-          {/* Keep SPA-style sections controlled by page state */}
-          <Route path="/" element={page === 'home' ? <HomeScreen /> : <Docs />} />
-          {/* Explicit docs path if someone navigates directly */}
-          <Route path="/docs" element={<Docs />} />
-          {/* Password Manager route */}
-          <Route path="/vault" element={<VaultPage />} />
-        </Routes>
-
-        <Footer onNavigate={setPage} currentPage={page} />
-      </div>
+      <AppContent />
     </BrowserRouter>
   );
 }
