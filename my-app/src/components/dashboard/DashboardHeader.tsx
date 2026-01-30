@@ -27,11 +27,10 @@ export function DashboardHeader({
               </div>
               <div>
                 <h1 className="text-xl font-bold tracking-tight">
-                  <span className="text-primary cyber-glow-text">CYBER</span>
-                  <span className="text-foreground">SENTINEL</span>
+                  <span className="text-primary cyber-glow-text">Visual</span>
+                  <span className="text-foreground">Maps</span>
                 </h1>
                 <p className="text-xs text-muted-foreground font-mono">
-                  THREAT INTELLIGENCE DASHBOARD
                 </p>
               </div>
             </div>

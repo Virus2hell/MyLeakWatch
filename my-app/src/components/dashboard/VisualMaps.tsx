@@ -108,15 +108,6 @@ export const VisualMaps = ({
           <LatestAttacksFeed attacks={filteredAttacks} limit={8} />
         </section>
 
-        {/* Footer */}
-        <footer className="text-center py-8 border-t border-border/30">
-          <p className="text-sm text-muted-foreground">
-            <span className="font-mono text-primary">CYBERSENTINEL</span> • Threat Intelligence Dashboard
-          </p>
-          <p className="text-xs text-muted-foreground/50 mt-1">
-            Data sourced from simulated threat intelligence feeds • For educational purposes
-          </p>
-        </footer>
       </main>
     </div>
   );
