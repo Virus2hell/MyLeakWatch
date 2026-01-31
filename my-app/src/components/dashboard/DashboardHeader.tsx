@@ -1,4 +1,4 @@
-import { Shield, RefreshCw, Wifi, WifiOff } from 'lucide-react';
+import { Shield, RefreshCw, Wifi, WifiOff, MapPinnedIcon } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 interface DashboardHeaderProps {
@@ -23,7 +23,7 @@ export function DashboardHeader({
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-primary/10 cyber-glow">
-                <Shield className="w-6 h-6 text-primary" />
+                <MapPinnedIcon className="w-6 h-6 text-primary" />
               </div>
               <div>
                 <h1 className="text-xl font-bold tracking-tight">
