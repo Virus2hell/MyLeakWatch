@@ -4,8 +4,9 @@ const { checkBreaches } = require("../services/hibp.service")
 const { isNewBreach, logBreach } = require("../services/breach.service")
 const { sendBreachMail } = require("../services/mail.service")
 
-// ⏱ Runs daily at 2 AM (server time)
-cron.schedule("0 2 * * *", async () => {
+//for testing: "*/1 * * * *" (every minute)
+//for production use: 2am daily: "0 2 * * *"
+cron.schedule("*/1 * * * *", async () => {
   console.log("⏰ Breach scan started:", new Date().toISOString())
 
   try {
