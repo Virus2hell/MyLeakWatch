@@ -37,6 +37,10 @@ app.use('/api', breachRoutes);
 // ================== MULTER ==================
 const upload = multer({ dest: 'uploads/' });
 
+// new OTX route
+const otxRoutes = require("./routes/otx.routes");
+app.use("/api", otxRoutes);
+
 // =================================================
 // CHAT via GROQ (unchanged)
 // =================================================
