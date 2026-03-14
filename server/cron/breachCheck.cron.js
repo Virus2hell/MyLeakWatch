@@ -6,7 +6,7 @@ const { sendBreachMail } = require("../services/mail.service")
 
 //for testing: "*/1 * * * *" (every minute)
 //for production use: 2am daily: "0 2 * * *"
-cron.schedule("*/1 * * * *", async () => {
+cron.schedule("0 2 * * *", async () => {
   console.log("⏰ Breach scan started:", new Date().toISOString())
 
   try {
