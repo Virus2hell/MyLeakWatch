@@ -18,13 +18,13 @@ function AppContent() {
   const location = useLocation();
 
   const [attacks, setAttacks] = useState<AttackEvent[]>([]);
+  const [news, setNews] = useState<AttackEvent[]>([]);
   const [loading, setLoading] = useState(false);
   const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
+  // Fetch attack data (ThreatFox + AbuseIPDB)
   const fetchAttacks = async () => {
     try {
-      setLoading(true);
-
       const res = await fetch("http://localhost:4000/api/attacks");
 
       const data = await res.json();
@@ -35,18 +35,52 @@ function AppContent() {
       }));
 
       setAttacks(formatted);
-      setLastFetched(new Date());
     } catch (error) {
       console.error("Failed to fetch attacks", error);
+    }
+  };
+
+  // Fetch cybersecurity news
+  const fetchCyberNews = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/api/cyber-news");
+
+      const data = await res.json();
+
+      const formatted = data.map((n: any) => ({
+        ...n,
+        timestamp: new Date(n.timestamp),
+      }));
+
+      setNews(formatted);
+    } catch (error) {
+      console.error("Failed to fetch cyber news", error);
+    }
+  };
+
+  // Load dashboard data
+  const loadData = async () => {
+    try {
+      setLoading(true);
+
+      await Promise.all([
+        fetchAttacks(),
+        fetchCyberNews()
+      ]);
+
+      setLastFetched(new Date());
+
+    } catch (error) {
+      console.error("Dashboard fetch error:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAttacks();
+    loadData();
 
-    const interval = setInterval(fetchAttacks, 60000);
+    const interval = setInterval(loadData, 60000);
 
     return () => clearInterval(interval);
   }, []);
@@ -74,10 +108,11 @@ function AppContent() {
           element={
             <VisualMaps
               attacks={attacks}
+              news={news}
               lastFetched={lastFetched}
               isLoading={loading}
               dataSource="live"
-              onRefresh={fetchAttacks}
+              onRefresh={loadData}
             />
           }
         />

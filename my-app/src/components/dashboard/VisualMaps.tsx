@@ -20,6 +20,7 @@ import { AttackEvent, AttackType, AttackSeverity } from "../../types/attack";
 
 interface VisualMapsProps {
   attacks: AttackEvent[];
+  news: AttackEvent[];
   lastFetched?: Date;
   isLoading?: boolean;
   dataSource?: "live" | "mock";
@@ -28,6 +29,7 @@ interface VisualMapsProps {
 
 export const VisualMaps = ({
   attacks,
+  news,
   lastFetched = new Date(),
   isLoading = false,
   dataSource = "live",
@@ -160,7 +162,7 @@ export const VisualMaps = ({
             <TrendLineChart data={trends} />
           </div>
 
-          <LatestAttacksFeed attacks={filteredAttacks} limit={8} />
+          <LatestAttacksFeed attacks={news} limit={10} />
         </section>
       </main>
     </div>

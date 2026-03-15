@@ -168,6 +168,11 @@ app.get('/api/attacks', async (req, res) => {
 
 });
 
+// cyber news route
+const cyberNews = require("./routes/cyberNews");
+
+app.use("/api", cyberNews);
+
 // =================================================
 // CHAT via GROQ
 // =================================================

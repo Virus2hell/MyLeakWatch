@@ -42,7 +42,7 @@ export function DashboardHeader({
               {dataSource === 'live' ? (
                 <>
                   <Wifi className="w-3 h-3 text-success" />
-                  <span className="font-mono text-success">LIVE • OTX</span>
+                  <span className="font-mono text-success">LIVE</span>
                 </>
               ) : (
                 <>
