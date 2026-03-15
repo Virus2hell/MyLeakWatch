@@ -42,7 +42,7 @@ export function AttackTypePieChart({ data }: AttackTypePieChartProps) {
 const sorted = [...data].sort((a, b) => b.count - a.count);
 
 // how many slices we want
-const MAX_PIE_ITEMS = 20;
+const MAX_PIE_ITEMS = 12;
 
 // top categories for pie
 const topTypes = sorted.slice(0, MAX_PIE_ITEMS);
