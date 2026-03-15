@@ -12,15 +12,20 @@ import { WorldMapHeatmap } from "./WorldMapHeatmap";
 import {
   calculateAttackStats,
   calculateAttacksByType,
-  calculateAttacksByCountry,
-  calculateAttackTrends,
+  calculateAttacksByCountry
 } from "../../data/mockAttackData";
 
-import { AttackEvent, AttackType, AttackSeverity } from "../../types/attack";
+import {
+  AttackEvent,
+  AttackType,
+  AttackSeverity,
+  AttackTrend
+} from "../../types/attack";
 
 interface VisualMapsProps {
   attacks: AttackEvent[];
   news: AttackEvent[];
+  trends: AttackTrend[];
   lastFetched?: Date;
   isLoading?: boolean;
   dataSource?: "live" | "mock";
@@ -30,32 +35,28 @@ interface VisualMapsProps {
 export const VisualMaps = ({
   attacks,
   news,
+  trends,
   lastFetched = new Date(),
   isLoading = false,
   dataSource = "live",
-  onRefresh,
+  onRefresh
 }: VisualMapsProps) => {
-  const [filters, setFilters] = useState<{
-    dateRange: { start: Date | null; end: Date | null };
-    country: string | null;
-    attackType: AttackType | null;
-    severity: AttackSeverity | null;
-  }>({
-    dateRange: { start: null, end: null },
-    country: null,
-    attackType: null,
-    severity: null,
+
+  const [filters, setFilters] = useState({
+    dateRange: { start: null as Date | null, end: null as Date | null },
+    country: null as string | null,
+    attackType: null as AttackType | null,
+    severity: null as AttackSeverity | null
   });
 
   const filteredAttacks = useMemo(() => {
     return attacks.filter((attack) => {
-      if (filters.dateRange.start && attack.timestamp < filters.dateRange.start)
-        return false;
-      if (filters.dateRange.end && attack.timestamp > filters.dateRange.end)
-        return false;
+      if (filters.dateRange.start && attack.timestamp < filters.dateRange.start) return false;
+      if (filters.dateRange.end && attack.timestamp > filters.dateRange.end) return false;
       if (filters.country && attack.country !== filters.country) return false;
       if (filters.attackType && attack.type !== filters.attackType) return false;
       if (filters.severity && attack.severity !== filters.severity) return false;
+
       return true;
     });
   }, [attacks, filters]);
@@ -72,11 +73,6 @@ export const VisualMaps = ({
 
   const attacksByCountry = useMemo(
     () => calculateAttacksByCountry(filteredAttacks),
-    [filteredAttacks]
-  );
-
-  const trends = useMemo(
-    () => calculateAttackTrends(filteredAttacks),
     [filteredAttacks]
   );
 
@@ -104,14 +100,14 @@ export const VisualMaps = ({
       />
 
       <main className="container mx-auto px-4 py-6 space-y-6">
-        {/* Stats Cards */}
+
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
           <StatCard
             title="Total Attacks"
             value={stats.totalAttacks}
             subtitle="Last 6 months"
             icon={Shield}
-            trend={{ value: 12, isPositive: true }}
           />
 
           <StatCard
@@ -120,7 +116,6 @@ export const VisualMaps = ({
             subtitle="Requiring immediate action"
             icon={AlertTriangle}
             variant="critical"
-            trend={{ value: 8, isPositive: true }}
           />
 
           <StatCard
@@ -137,33 +132,33 @@ export const VisualMaps = ({
             subtitle="Global coverage"
             icon={Globe}
           />
+
         </section>
 
-        {/* Filters */}
         <FilterControls
           countries={uniqueCountries}
           onFilterChange={handleFilterChange}
         />
 
-        {/* World Map */}
         <section>
           <WorldMapHeatmap data={attacksByCountry} />
         </section>
 
-        {/* Charts */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <AttackTypePieChart data={attacksByType} />
           <CountryBarChart data={attacksByCountry} />
         </section>
 
-        {/* Trend + Feed */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
           <div className="lg:col-span-2">
             <TrendLineChart data={trends} />
           </div>
 
           <LatestAttacksFeed attacks={news} limit={10} />
+
         </section>
+
       </main>
     </div>
   );

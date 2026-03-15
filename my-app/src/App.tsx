@@ -12,17 +12,20 @@ import BreachMonitor from "./components/BreachMonitoring";
 
 import { VisualMaps } from "./components/dashboard/VisualMaps";
 
-import { AttackEvent } from "./types/attack";
+import { AttackEvent, AttackTrend } from "./types/attack";
+
+import { fetchAttackTrends } from "./api/trendsApi";
 
 function AppContent() {
   const location = useLocation();
 
   const [attacks, setAttacks] = useState<AttackEvent[]>([]);
   const [news, setNews] = useState<AttackEvent[]>([]);
+  const [trends, setTrends] = useState<AttackTrend[]>([]);
+
   const [loading, setLoading] = useState(false);
   const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
-  // Fetch attack data (ThreatFox + AbuseIPDB)
   const fetchAttacks = async () => {
     try {
       const res = await fetch("http://localhost:4000/api/attacks");
@@ -31,16 +34,16 @@ function AppContent() {
 
       const formatted = data.map((a: any) => ({
         ...a,
-        timestamp: new Date(a.timestamp),
+        timestamp: new Date(a.timestamp)
       }));
 
       setAttacks(formatted);
+
     } catch (error) {
       console.error("Failed to fetch attacks", error);
     }
   };
 
-  // Fetch cybersecurity news
   const fetchCyberNews = async () => {
     try {
       const res = await fetch("http://localhost:4000/api/cyber-news");
@@ -49,23 +52,33 @@ function AppContent() {
 
       const formatted = data.map((n: any) => ({
         ...n,
-        timestamp: new Date(n.timestamp),
+        timestamp: new Date(n.timestamp)
       }));
 
       setNews(formatted);
+
     } catch (error) {
       console.error("Failed to fetch cyber news", error);
     }
   };
 
-  // Load dashboard data
+  const fetchTrends = async () => {
+    try {
+      const data = await fetchAttackTrends();
+      setTrends(data);
+    } catch (error) {
+      console.error("Failed to fetch trends", error);
+    }
+  };
+
   const loadData = async () => {
     try {
       setLoading(true);
 
       await Promise.all([
         fetchAttacks(),
-        fetchCyberNews()
+        fetchCyberNews(),
+        fetchTrends()
       ]);
 
       setLastFetched(new Date());
@@ -109,6 +122,7 @@ function AppContent() {
             <VisualMaps
               attacks={attacks}
               news={news}
+              trends={trends}
               lastFetched={lastFetched}
               isLoading={loading}
               dataSource="live"

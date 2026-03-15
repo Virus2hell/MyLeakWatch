@@ -173,6 +173,11 @@ const cyberNews = require("./routes/cyberNews");
 
 app.use("/api", cyberNews);
 
+// attack trends route
+const attackTrends = require("./routes/attackTrends");
+
+app.use("/api/attack-trends", attackTrends);
+
 // =================================================
 // CHAT via GROQ
 // =================================================
