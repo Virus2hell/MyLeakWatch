@@ -33,10 +33,19 @@ const SECTIONS: Section[] = [
       { id: 'img-after', title: 'After misuse' }
     ]
   },
+  {
+  id: 'aadhaar-breach', title: 'Aadhaar Breach',
+  items: [
+    { id: 'aadhaar-how', title: 'How it happens' },
+    { id: 'aadhaar-prevent', title: 'Prevention' },
+    { id: 'aadhaar-after', title: 'After a breach' }
+  ]
+},
   { id: 'prevention-checklist', title: 'Universal Prevention' },
   { id: 'after-checklist', title: 'After‑Breach Playbook' },
   { id: 'faq', title: 'FAQ' },
-  { id: 'glossary', title: 'Glossary' }
+  { id: 'glossary', title: 'Glossary' },
+  { id: 'helplines', title: 'Helplines' },
 ];
 
 export default function Docs() {
@@ -153,98 +162,171 @@ export default function Docs() {
           </Section>
 
           <Section id="email-breach" title="Email Breach">
-            <h3 id="email-how" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">How it happens</h3>
-            <p>
-              Email addresses leak when services suffer database compromises, misconfigured storage,
-              phishing kits harvest logins, or third‑party vendors are breached and lists circulate.
-            </p>
-            <h3 id="email-prevent" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">Prevention</h3>
-            <ul>
-              <li>Unique passwords per site; enable app‑based MFA.</li>
-              <li>Use aliases for signups; avoid publishing your primary address.</li>
-              <li>Be cautious with links/attachments and verify sender domains.</li>
-            </ul>
-            <h3 id="email-after" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">After a breach</h3>
-            <ul>
-              <li>Change the site password and enable MFA; review sessions/devices.</li>
-              <li>Hunt for breach‑related phishing; report spam and block.</li>
-              <li>Monitor statements and identity alerts; consider credit freezes.</li>
-            </ul>
-          </Section>
+  <h3 id="email-how" data-doc-section="true" className="subhead">How it happens</h3>
+  <ul>
+    <li><strong>Phishing attacks:</strong> Fake emails trick users into entering credentials on malicious websites.</li>
+    <li><strong>Credential stuffing:</strong> Attackers reuse leaked passwords from other breaches.</li>
+    <li><strong>Database breaches:</strong> Company servers are hacked and user data is leaked.</li>
+    <li><strong>Malware / infostealers:</strong> Installed via attachments or pirated software, stealing saved emails and passwords.</li>
+    <li><strong>Email spoofing:</strong> Attackers impersonate your email to scam others.</li>
+    <li><strong>Public WiFi attacks (MITM):</strong> Login data intercepted on insecure networks.</li>
+  </ul>
 
-          <Section id="password-breach" title="Password Breach">
-            <h3 id="pwd-how" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">How it happens</h3>
-            <p>
-              Passwords are exposed by database dumps (weak hashing), phishing, infostealers,
-              or reuse that enables credential stuffing across sites.
-            </p>
-            <h3 id="pwd-prevent" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">Prevention</h3>
-            <ul>
-              <li>Password manager + random passwords; zero reuse.</li>
-              <li>MFA everywhere; prefer authenticator apps or security keys.</li>
-              <li>Keep OS/browser updated; run reputable endpoint protection.</li>
-            </ul>
-            <h3 id="pwd-after" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">After a breach</h3>
-            <ul>
-              <li>Rotate the password immediately; revoke tokens and sessions.</li>
-              <li>Check the password via k‑anonymity; retire exposed ones permanently.</li>
-              <li>Update recovery channels; remove stale backup factors.</li>
-            </ul>
-          </Section>
+  <h3 id="email-prevent" data-doc-section="true" className="subhead">Prevention</h3>
+  <ul>
+    <li>Use a unique password for every website.</li>
+    <li>Enable Multi-Factor Authentication (MFA).</li>
+    <li>Use a password manager for secure storage.</li>
+    <li>Avoid clicking unknown links or attachments.</li>
+    <li>Verify sender email domains carefully.</li>
+    <li>Avoid logging into accounts on public WiFi.</li>
+  </ul>
 
-          <Section id="image-breach" title="Image Breach">
-            <h3 id="img-how" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">How it happens</h3>
-            <p>
-              Images leak via public profiles, scraped datasets, compromised albums, or reposts;
-              search engines and forums can amplify distribution quickly.
-            </p>
-            <h3 id="img-prevent" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">Prevention</h3>
-            <ul>
-              <li>Use privacy controls; strip EXIF; watermark sensitive media.</li>
-              <li>Prefer expiring share links; avoid public posts for private photos.</li>
-              <li>Run periodic reverse image checks for impersonation.</li>
-            </ul>
-            <h3 id="img-after" data-doc-section="true" className="subhead text-xl md:text-2xl font-bold mt-6 mb-2">After misuse</h3>
-            <ul>
-              <li>File takedowns (DMCA/right‑to‑be‑forgotten equivalents) where applicable.</li>
-              <li>Report impersonation; keep evidence (URLs, timestamps, screenshots).</li>
-              <li>For extortion/intimate imagery: contact authorities and support orgs.</li>
-            </ul>
-          </Section>
+  <h3 id="email-after" data-doc-section="true" className="subhead">After a breach</h3>
+  <ul>
+    <li>Immediately change your password.</li>
+    <li>Enable MFA on all accounts.</li>
+    <li>Log out from all active sessions/devices.</li>
+    <li>Check for suspicious emails sent from your account.</li>
+    <li>Inform contacts if spam was sent from your email.</li>
+    <li>Run antivirus scan on your device.</li>
+  </ul>
+</Section>
 
-          <Section id="prevention-checklist" title="Universal Prevention">
-            <ul>
-              <li>Minimize shared data; rotate secrets on a fixed cadence.</li>
-              <li>Device encryption, auto‑lock, and hardware‑bound backup keys.</li>
-              <li>Segment email identities (primary, finance, shopping, throwaway).</li>
-              <li>Quarterly audit of third‑party app permissions.</li>
-            </ul>
-          </Section>
+<Section id="password-breach" title="Password Breach">
+  <h3 id="pwd-how" data-doc-section="true" className="subhead">How it happens</h3>
+  <ul>
+    <li>Weak or outdated hashing (MD5, plain text leaks).</li>
+    <li>Password reuse across multiple websites.</li>
+    <li>Phishing websites stealing login credentials.</li>
+    <li>Keyloggers recording keystrokes.</li>
+    <li>Brute force or dictionary attacks.</li>
+  </ul>
 
-          <Section id="after-checklist" title="After‑Breach Playbook">
-            <ol>
-              <li>Identify accounts; change credentials; invalidate sessions.</li>
-              <li>Enable MFA; update recovery information.</li>
-              <li>Scan devices; remove malicious extensions.</li>
-              <li>Notify contacts if spam was sent from your address.</li>
-              <li>Monitor statements; place credit freeze/fraud alerts if needed.</li>
-            </ol>
-          </Section>
+  <h3 id="pwd-prevent" data-doc-section="true" className="subhead">Prevention</h3>
+  <ul>
+    <li>Use long, strong passwords (12–16+ characters).</li>
+    <li>Use passphrases instead of simple passwords.</li>
+    <li>Never reuse passwords across sites.</li>
+    <li>Use a trusted password manager.</li>
+    <li>Enable MFA for additional security.</li>
+  </ul>
 
-          <Section id="faq" title="FAQ">
-            <p><strong>Do you store passwords?</strong> No—range method only; no raw passwords stored or transmitted.</p>
-            <p><strong>Are images stored?</strong> No—temporary processing, then deletion unless monitoring is enabled.</p>
-            <p><strong>Why results differ?</strong> Provider coverage and freshness vary; we combine sources for breadth.</p>
-          </Section>
+  <h3 id="pwd-after" data-doc-section="true" className="subhead">After a breach</h3>
+  <ul>
+    <li>Change the compromised password immediately.</li>
+    <li>Update all accounts using the same password.</li>
+    <li>Enable MFA on critical accounts.</li>
+    <li>Check breach databases for exposure.</li>
+    <li>Revoke active sessions and tokens.</li>
+  </ul>
+</Section>
 
-          <Section id="glossary" title="Glossary">
-            <ul>
-              <li><strong>Credential stuffing:</strong> Reusing leaked credentials on other sites.</li>
-              <li><strong>MFA:</strong> Multi‑factor authentication (app code or security key).</li>
-              <li><strong>k‑anonymity (range):</strong> Checking only a SHA‑1 prefix for private exposure lookups.</li>
-              <li><strong>pHash:</strong> Perceptual hash for near‑duplicate image detection.</li>
-            </ul>
-          </Section>
+<Section id="image-breach" title="Image Breach">
+  <h3 id="img-how" data-doc-section="true" className="subhead">How it happens</h3>
+  <ul>
+    <li>Images scraped from public social media profiles.</li>
+    <li>Cloud storage leaks or misconfigured sharing settings.</li>
+    <li>Unauthorized reposting on forums or websites.</li>
+    <li>Use in fake accounts or impersonation.</li>
+    <li>Deepfake misuse using AI tools.</li>
+  </ul>
+
+  <h3 id="img-prevent" data-doc-section="true" className="subhead">Prevention</h3>
+  <ul>
+    <li>Keep profiles private where possible.</li>
+    <li>Remove EXIF metadata before uploading images.</li>
+    <li>Avoid sharing sensitive images online.</li>
+    <li>Use watermarks for important media.</li>
+    <li>Regularly search your images online.</li>
+  </ul>
+
+  <h3 id="img-after" data-doc-section="true" className="subhead">After misuse</h3>
+  <ul>
+    <li>Report impersonation to the platform.</li>
+    <li>File DMCA takedown requests where applicable.</li>
+    <li>Keep evidence (screenshots, URLs, timestamps).</li>
+    <li>Report to cybercrime authorities.</li>
+    <li>Seek legal help in serious cases.</li>
+  </ul>
+</Section>
+
+<Section id="aadhaar-breach" title="Aadhaar Breach">
+  <h3 id="aadhaar-how" data-doc-section="true" className="subhead">How it happens</h3>
+  <ul>
+    <li>Data leaks from banks, telecoms, or third-party vendors.</li>
+    <li>Fake KYC calls asking for Aadhaar details.</li>
+    <li>Uploading Aadhaar publicly (job sites, WhatsApp).</li>
+    <li>Unauthorized eKYC leading to SIM or loan fraud.</li>
+    <li>Sharing full Aadhaar copies without masking.</li>
+  </ul>
+
+  <h3 id="aadhaar-prevent" data-doc-section="true" className="subhead">Prevention</h3>
+  <ul>
+    <li>Use Masked Aadhaar instead of full copy.</li>
+    <li>Lock Aadhaar biometrics via UIDAI website.</li>
+    <li>Do not share Aadhaar casually online.</li>
+    <li>Verify authenticity before submitting Aadhaar.</li>
+    <li>Check Aadhaar authentication history regularly.</li>
+  </ul>
+
+  <h3 id="aadhaar-after" data-doc-section="true" className="subhead">After a breach</h3>
+  <ul>
+    <li>Lock your Aadhaar biometrics immediately.</li>
+    <li>Download and use masked Aadhaar.</li>
+    <li>Check UIDAI authentication logs.</li>
+    <li>Report misuse on cybercrime portal.</li>
+    <li>Inform banks/telecom providers if fraud occurs.</li>
+  </ul>
+</Section>
+
+<Section id="prevention-checklist" title="Universal Prevention">
+  <ul>
+    <li>Use separate emails for banking, personal, and spam.</li>
+    <li>Enable MFA on all important accounts.</li>
+    <li>Keep devices updated and secure.</li>
+    <li>Regularly audit connected apps and permissions.</li>
+    <li>Avoid using pirated software or unknown downloads.</li>
+  </ul>
+</Section>
+
+<Section id="after-checklist" title="After-Breach Playbook">
+  <ol>
+    <li>Identify affected accounts and data.</li>
+    <li>Change passwords and enable MFA.</li>
+    <li>Log out from all devices and sessions.</li>
+    <li>Scan device for malware.</li>
+    <li>Notify contacts if necessary.</li>
+    <li>Monitor financial and email activity.</li>
+    <li>Report serious cases to authorities.</li>
+  </ol>
+</Section>
+
+<Section id="faq" title="FAQ">
+  <p><strong>Can someone hack me with just my email?</strong> Not directly, but it increases phishing risk.</p>
+  <p><strong>Is checking password safe?</strong> Yes, k-anonymity ensures your password is not exposed.</p>
+  <p><strong>What is the biggest risk?</strong> Password reuse across multiple sites.</p>
+</Section>
+
+<Section id="glossary" title="Glossary">
+  <ul>
+    <li><strong>Phishing:</strong> Fake messages designed to steal sensitive information.</li>
+    <li><strong>Credential Stuffing:</strong> Using leaked credentials on multiple websites.</li>
+    <li><strong>MFA:</strong> Multi-Factor Authentication for extra security.</li>
+    <li><strong>Infostealer:</strong> Malware that steals personal data.</li>
+    <li><strong>Deepfake:</strong> AI-generated fake media.</li>
+  </ul>
+</Section>
+
+<Section id="helplines" title="Emergency & Helplines (India)">
+  <ul>
+    <li><strong>Cyber Crime Helpline:</strong> 1930</li>
+    <li><strong>Cyber Crime Portal:</strong> https://cybercrime.gov.in</li>
+    <li><strong>UIDAI Helpline (Aadhaar):</strong> 1947</li>
+    <li><strong>Police Emergency:</strong> 100</li>
+    <li><strong>Women Helpline:</strong> 1091</li>
+  </ul>
+</Section>
         </main>
       </div>
     </div>
