@@ -1,6 +1,6 @@
 import React from 'react';
-import {LucideImagePlus, LucideLockKeyhole, Brain, LucideMailSearch, LucidePhoneCall, MonitorSmartphoneIcon, LucideKeyRound, LucideBookOpenText } from 'lucide-react';
-
+import {LucideMailSearch, LucideLockKeyhole, Brain, LucidePhoneCall, MonitorSmartphoneIcon, LucideBookOpenText, LucideMap, LucideBellRing, LucideNewspaper } from 'lucide-react';
+ 
 const AboutUs = () => {
   const features = [
     {
@@ -9,14 +9,14 @@ const AboutUs = () => {
       description: 'Fast lookups powered by licensed breach data and HIBP-compatible endpoints, with clear breach details and privacy-first processing.'
     },
     {
-      icon: LucideImagePlus,
-      title: 'Image search',
-      description: 'Reverse image scanning to spot unauthorized reuse of photos/avatars using provider integrations and perceptual hashing for quick matches.'
+      icon: LucideBellRing,
+      title: 'Real time email monitoring',
+      description: 'Register your email for continuous background monitoring. Our automated cron job scans for new breaches and instantly alerts.'
     },
     {
-      icon: LucideLockKeyhole,
-      title: 'Password management',
-      description: 'Securely save passwords in an encrypted vault and access them with email-based OTP for quick, code‑verified unlocks across sessions.'
+      icon: LucideMap,
+      title: 'VisualMaps',
+      description: 'Explore a live global threat intelligence dashboard featuring a geographic attack map with country-level highlights, threat indicators, and many more.'
     },
     {
       icon: Brain,
@@ -24,9 +24,9 @@ const AboutUs = () => {
       description: 'On‑site assistant that explains breach results, prioritizes what to fix, and walks through step‑by‑step remediation in plain language.'
     },
     {
-      icon: LucideKeyRound,
-      title: 'Password Checker',
-      description: 'Instantly evaluate password strength and reuse with local hashing and guidance to create safer alternatives.'
+      icon: LucideNewspaper,
+      title: 'Cybersecurity news',
+      description: 'Stay informed with a live feed of the latest cybersecurity news, emerging threats, vulnerability disclosures, and industry updates curated to keep you ahead of potential risks.'
     },
     {
       icon: LucideBookOpenText,
@@ -44,7 +44,7 @@ const AboutUs = () => {
       description: 'Optimized for mobile, tablet, and desktop with accessible typography and touch-friendly controls.'
     },
   ];
-
+ 
   return (
     <section id="about" className="py-20 bg-[#0b0f1a]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,7 +59,7 @@ const AboutUs = () => {
             put at risk due to an online account of theirs having been compromised or "pwned" in a data breach.
           </p>
         </div>
-
+ 
         {/* Mission Statement */}
         <div className="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-2xl p-8 mb-16 border border-blue-500/20">
           <div className="text-center">
@@ -71,7 +71,7 @@ const AboutUs = () => {
             </p>
           </div>
         </div>
-
+ 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {features.map((feature, index) => (
@@ -85,7 +85,7 @@ const AboutUs = () => {
             </div>
           ))}
         </div>
-
+ 
         {/* Story Section */}
         <div className="bg-slate-700/30 rounded-2xl p-8 border border-slate-600/30">
           <div className="max-w-4xl mx-auto">
@@ -109,5 +109,6 @@ const AboutUs = () => {
     </section>
   );
 };
-
+ 
 export default AboutUs;
+ 
